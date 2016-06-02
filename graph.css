@@ -3,11 +3,13 @@ body {
 }
 
 .axis path,
-.axis line {
+.axis line, 
+.goalline {
   fill: none;
   stroke: #000;
   shape-rendering: crispEdges;
 }
+
 
 #home {
   color: red;
