@@ -48,7 +48,6 @@ d3.json("courses.json", function(error, json) {
 
 	}
 
-
 	geravg = (geravg[0] === 0) ? 0: geravg[1]/geravg[0] ;
 	majoravg = (majoravg[0] === 0) ? 0: majoravg[1]/majoravg[0] ;
 	otheravg = (otheravg[0] === 0) ? 0: otheravg[1]/otheravg[0] ;
@@ -64,7 +63,7 @@ d3.json("courses.json", function(error, json) {
 		.attr("height", height + margin.top + margin.bottom);
 
 	var x = d3.scale.linear()
-				.domain([0, 11])
+				.domain([1, 12])
 				.range([0,width]);
 
 	var maxUnits = 240;//12 20 unit quarters
@@ -98,32 +97,52 @@ d3.json("courses.json", function(error, json) {
     var color = d3.scale.category20().domain(["ger","major", "other"]);
     
     var gerarea = d3.svg.area()
-    				.x(function(d, i) {return x(i);})
+    				.x(function(d, i) {return x(i+1);})
     				.y0(height)
     				.y1(function(d) {return y(d);});
 
     var majorarea = d3.svg.area()
-    				.x(function(d, i) {return x(i);})
+    				.x(function(d, i) {return x(i+1);})
     				.y0(function(d,i) {return y(gerdata[i]);})
     				.y1(function(d,i) {return y(gerdata[i] + d);});
 
     var otherarea = d3.svg.area()
-    				.x(function(d, i) {return x(i);})
+    				.x(function(d, i) {return x(i+1);})
     				.y0(function(d,i) {return y(gerdata[i] + majordata[i]);})
     				.y1(function(d,i) {return y(gerdata[i] + majordata[i] + d);});
 
     graph.append("path")
     	.datum(gerdata)
     	.attr("d", gerarea)
+    	.attr("class","gerarea")
     	.style("fill", color("ger"));
 
    	graph.append("path")
     	.datum(majordata)
     	.attr("d", majorarea)
+    	.attr("class","majorarea")
     	.style("fill", color("major"));
 
    	graph.append("path")
     	.datum(otherdata)
     	.attr("d", otherarea)
+    	.attr("class","otherarea")
     	.style("fill", color("other"));
+
+    // X label
+    graph.append("text")
+  			.text("Quarter")
+  			.attr("text-anchor", "middle")
+  			.attr("transform", "translate(" + width/2 + "," + (height + margin.bottom) + ")");
+
+  	graph.append("text")
+  			.text("Unit Total")
+  			.attr("text-anchor", "middle")
+  			.attr("x",-height/2)
+  			.attr("y", -margin.left + 10)
+  			.attr("transform", "rotate(270)");
+
+
+
+
 });
