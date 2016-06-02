@@ -149,7 +149,17 @@ d3.json("courses.json", function(error, json) {
   		.attr({x1:x(1),y1:y(180),x2:x(12),y2:y(180)})
   		.attr("");
 
-
-
-
+  	// filter listeners
+  	$('.filterall').click(function(e) {
+  		console.log(e);
+  	});
+  	$('.filterger').click(function(e) {
+  		console.log(e);
+  	});
+  	$('.filtermaj').click(function(e) {
+  		console.log(e);
+  	});
+  	$('.filteroth').click(function(e) {
+  		console.log(e);
+  	});
 });
