@@ -4,12 +4,12 @@
 d3.json("courses.json", function(error, json) {
 	if (error) return console.warn(error);
 	//process data
-	var gerarea = [0,0,0,0,0,0];
-	var majorarea = [0,0,0,0,0,0];
-	var otherarea = [0,0,0,0,0,0];
+	var gerdata = [0,0,0,0,0,0];
+	var majordata= [0,0,0,0,0,0];
+	var otherdata = [0,0,0,0,0,0];
 
 	var geravg = [0,0];
-	var majorravg = [0,0];
+	var majoravg = [0,0];
 	var otheravg = [0,0];
 
 
@@ -21,9 +21,9 @@ d3.json("courses.json", function(error, json) {
 			var grade = info[3];
 			if(fulf === "ger") {
 				if(quarter === 0) {
-					gerarea[quarter] = units;
+					gerdata[quarter] = units;
 				} else {
-					gerarea[quarter] = gerarea[quarter -1] + units
+					gerdata[quarter] = gerdata[quarter -1] + units;
 				}
 				if(grade !== "cr/ncr") {
 					geravg[0]++;
@@ -31,9 +31,9 @@ d3.json("courses.json", function(error, json) {
 				}
 			} else if(fulf === "major") {
 				if(quarter === 0) {
-					majorarea[quarter] = units;
+					majordata[quarter] = units;
 				} else {
-					majorarea[quarter] = majorarea[quarter -1] + units
+					majordata[quarter] = majordata[quarter -1] + units;
 				}
 				if(grade !== "cr/ncr") {
 					majoravg[0]++;
@@ -41,9 +41,9 @@ d3.json("courses.json", function(error, json) {
 				}
 			} else { // other
 				if(quarter === 0) {
-					otherarea[quarter] = units;
+					otherdata[quarter] = units;
 				} else {
-					otherarea[quarter] = otherarea[quarter -1] + units
+					otherdata[quarter] = otherdata[quarter -1] + units;
 				}
 				if(grade !== "cr/ncr") {
 					otheravg[0]++;
@@ -51,11 +51,13 @@ d3.json("courses.json", function(error, json) {
 				}
 			}
 		}
-	}
+	}	
 
-	geravg = geravg[1]/geravg[0];
-	majoravg = majoravg[1]/majoravg[0];
-	otheravg = otheravg[1]/otheravg[0];
+	geravg = (geravg[0] === 0) ? 0: geravg[1]/geravg[0] ;
+	majoravg = (majoravg[0] === 0) ? 0: majoravg[1]/majoravg[0] ;
+	otheravg = (otheravg[0] === 0) ? 0: otheravg[1]/otheravg[0] ;
+
+	console.log(geravg,majoravg,otheravg);
 
 
 	// Set up size
