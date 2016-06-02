@@ -1,0 +1,57 @@
+FALL
+--------------
+phil 2:
+Units: 5 | UG Reqs: GER:DB-Hum, GER:EC-EthicReas, WAY-A-II, WAY-ER
+cs 106A:
+Units: 3-5 | UG Reqs: GER:DB-EngrAppSci, WAY-FR |
+math 51: CR/NCR
+Units: 5 | UG Reqs: GER:DB-Math, WAY-FR
+
+WINTER
+--------------
+PWR 1AO:
+Units: 4 | UG Reqs: Writing 1
+think 29:
+Units: 4 | UG Reqs: THINK, WAY-SI
+cs106b: CR/NCR
+Units: 3-5 | UG Reqs: GER:DB-EngrAppSci, WAY-FR 
+econ 1:
+Units: 5 | UG Reqs: GER:DB-SocSci, WAY-SI
+
+SPRING
+--------------
+psych 1:
+Units: 5 | UG Reqs: GER:DB-SocSci, WAY-SI
+cs 107:
+Units: 3-5 | UG Reqs: GER:DB-EngrAppSci, WAY-FR
+cs 155:
+Units: 3 | UG Reqs: GER:DB-EngrAppSci
+
+FALL
+--------------
+pwr 2ck:
+Units: 4 | UG Reqs: Writing 2
+engr 40:
+Units: 5 | UG Reqs: GER:DB-EngrAppSci, WAY-AQR, WAY-SMA
+cs 154:
+Units: 3-4 | UG Reqs: GER:DB-EngrAppSci 
+spanlang 1:
+Units: 5
+
+WINTER
+--------------
+cs 103:
+Units: 3-5 | UG Reqs: GER:DB-Math, WAY-FR 
+cs 110:
+Units: 3-5 | UG Reqs: GER:DB-EngrAppSci
+spanlang 2:
+Units: 5
+
+SPRING
+--------------
+spanlang 3:
+Units: 5
+cs 143:
+Units: 3-4 | UG Reqs: GER:DB-EngrAppSci
+bio 150:
+Units: 5 | UG Reqs: GER: DB-NatSci, WAY-SMA

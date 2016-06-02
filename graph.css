@@ -1,0 +1,137 @@
+body {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+#home {
+  color: red;
+  padding-top: 10px;
+}
+
+#work {
+  color: green;
+  padding-top: 10px;
+}
+
+#crime-description {
+  height: 60px;
+}
+
+/*#sliders {
+  padding-top: 0px !important;
+  margin-top: 0px !important;
+}*/
+
+image {
+	pointer-events: none;
+	z-index: -1;
+}
+
+#left-side-bar {
+  z-index: 100;
+}
+
+#legend {
+	position: absolute;
+	top: 0px;
+	left: 780px;
+}
+
+.resize {
+    fill-opacity: .5;
+    cursor: move;
+    stroke: black;
+    stroke-width: 1px;
+  }
+
+  .extent {
+    fill-opacity: .25;
+    fill: rgb(205,130,42);
+    cursor: grab;
+    stroke: black;
+    stroke-width: 1px;
+  }
+
+  .e {
+    fill: rgb(111,111,111);
+    cursor: move;
+  }
+
+  .w {
+    fill: rgb(169,169,169);
+    cursor: move;
+  }
+
+  path.pieminutes {
+      fill: rgb(246,139,51);
+    /*stroke: black;
+    stroke-width: 1px;*/
+  }
+
+  #row-clock {
+    margin-top: 10px;
+  }
+
+  path.piehours {
+  	fill-opacity: 0;
+  	stroke: black;
+  	stroke-width: 1px;
+  }
+
+  #type-label {
+    margin-bottom: 7px;
+  }
+
+  .tagtext {
+    color: white;
+    display: inline-block;
+    padding: 6px 10px 4px;
+    border-radius: 5px;
+    margin-right: 8px;
+    margin-top: 10px;
+  }
+
+  #tags {
+    padding-top: 5px;
+  }
+
+  .exits {
+     cursor: pointer;
+  }
+
+  #homeRad #workRad {
+    pointer-events:none;
+    z-index:-1;
+  }
+
+  #homeLoc #workLoc {
+    z-index:2;
+  }
+
+  .clocklab {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+#chart {
+  width: 780px;
+}
+
+.row-item {
+  display: inline;
+}
+
+.d3-slider {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
