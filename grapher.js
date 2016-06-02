@@ -153,22 +153,46 @@ d3.json("courses.json", function(error, json) {
 	    	if(arrays.length === 3) {
 	    		drawTotalProjection();
 	    	}
-	    	// Hover areas
-		  	var tip = d3.tip()
-			  .attr('class', 'd3-tip')
-			  .direction('e')
-			  .style('z-index', 100)
-			  .offset([-10, 0])
-			  .html(function(d) {
-			    return "<div style='z-index:10'><span style='color:red'>" + verbose[d] + " GPA: " + avgs[d] + "</span></div>";
-			  });
+	    	//Hover areas
+		 //  	var tip = d3.tip()
+			//   .attr('class', 'd3-tip')
+			//   .direction('e')
+			//   .style('z-index', 100)
+			//   .offset([-5, 0])
+			//   .html(function(d) {
+			//     return "<div style='z-index:10'><span style='color:white'>" + verbose[d] + " GPA: " + avgs[d] + "</span></div>";
+			//   });
 
-			graph.call(tip);
+			// graph.call(tip);
 
-			svg.selectAll(".area")
-			.data(names)
-			.on('mouseover', tip.show)
-			.on('mouseout', tip.hide);
+			// svg.selectAll(".area")
+			// .data(names)
+			// .on('mouseover', tip.show)
+			// .on('mouseout', tip.hide);
+			
+			/**** SAVE DO AFTER POSTER!!! ***/
+			// var majText = "Major GPA: " + avgs.maj;
+			// // console.log(avgs);
+			// Tipped.create('.maj', majText, {
+			// 	position: 'right',
+			// 	title: "Major Requirments",
+			// 	size: "large",
+			// 	skin: 'light',
+			// 	onShow: function(content, element) {
+			// 		// $(element).addClass('highlight');
+			// 		var toptip = $(content).parent().parent().parent().parent().parent();
+			// 		console.log(toptip[0]);
+			// 		var pixels = json.length * 30;//quarter * certain amount of pixels
+			// 		toptip.css('left', ""+pixels+"px");
+			// 		toptip.css('position', 'relative');
+			// 	},
+			// 	afterHide: function(content, element) {
+			// 		// $(element).removeClass('highlight');
+			// 	}
+			// });
+			// console.log($(".tpd-tooltip")[0]);
+			// $(".tpd-tooltip").css('left', "1000px");
+			// Tipped.create('.ger', 'gerdata');
 	    }	
 
 
@@ -291,5 +315,40 @@ d3.json("courses.json", function(error, json) {
 		    	});
 			}
 		});
+
+		// Now let's do the major %/total left meter
+		var percent = 0.75;
+		var bar = new ProgressBar.Circle("#majorPercent", {
+		  color: '#aaa',
+		  // This has to be the same size as the maximum width to
+		  // prevent clipping
+		  strokeWidth: 6,
+		  trailWidth: 2,
+		  easing: 'easeInOut',
+		  duration: 1300,
+		  text: {
+		    autoStyleContainer: false
+		  },
+		  from: { color: '#FFEA82', width: 1 },
+		  to: { color: '#ED6A5A', width: 4 },
+		  // Set default step function for all animate calls
+		  step: function(state, circle) {
+		    circle.path.setAttribute('stroke', state.color);
+		    circle.path.setAttribute('stroke-width', state.width);
+
+		    var value = Math.round(circle.value() * 100);
+		    if (value === 0) {
+		      circle.setText('');
+		    } else {
+		      circle.setText(value+"%");
+		    }
+
+		  }
+		});
+		bar.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
+		bar.text.style.fontSize = '6rem';
+
+		bar.animate(percent);
+
 	});
 });
