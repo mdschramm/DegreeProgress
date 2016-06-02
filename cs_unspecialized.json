@@ -1,4 +1,4 @@
-var requirements = {
+{
 	"Elective Classes": {
 		"CS": ["CS 108", "CS 124", "CS 131", "CS 140","CS 142", "CS 144", "CS 145", "CS 147", "CS148","CS 149", "CS 156", "CS 157", "CS 164", "CS 166", "CS 167", "CS 205A", "CS 205B", "CS 210A", "CS 222", "CS 223A"
 		, "CS 224M", "CS 224N", "CS 224S", "CS 224U", "CS 224W", "CS 225A", "CS 225B", "CS 226",
@@ -15,8 +15,6 @@ var requirements = {
 		"math": ["MATH 51","MATH 51M","MATH 52","MATH 53","MATH 51H", "MATH 52H", "MATH 53H","CME 100","CME 102","CME 104","CME 108","CME 192",
 		"ENGR 62","MATH 104","MATH 106","MATH 109","MATH 113","MATH 115","MATH 120","MATH 121","MATH 131P","MS&E 121"]
 	},
-	
-
 	"Requirements": {
 		"Mathematics": {
 			"units": 26,
@@ -88,7 +86,7 @@ var requirements = {
 					"type": "elective",
 					"electives": "math"
 				}
-			],
+			]
 		},
 
 		"Science": {
@@ -133,7 +131,7 @@ var requirements = {
 											"name": "AP Physics: E&M"
 										}
 									]
-								},
+								}
 							]
 						},
 						{
@@ -220,7 +218,7 @@ var requirements = {
 					"classes": [
 						{
 							"type": "elective",
-							"electives": "physics",
+							"electives": "physics"
 						},
 						{
 							"type": "AP",
@@ -566,13 +564,15 @@ var requirements = {
 				},
 				{
 					"type": "elective",
-					"electives": "CS",
+					"electives": "CS"
 				},
 				{
 					"type": "elective",
-					"electives": "CS",
+					"electives": "CS"
 				}
 			]
 		}
 	}
+
+	
 }
