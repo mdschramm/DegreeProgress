@@ -14,44 +14,40 @@ d3.json("courses.json", function(error, json) {
 
 
 	for(var quarter=0; quarter < json.length; quarter++){
+		var ger = 0;
+		var maj = 0;
+		var oth = 0;
 		for(var course=0; course< json[quarter].length; course++) {
 			var info = json[quarter][course];
 			var fulf = info[1];
 			var units = info[2];
 			var grade = info[3];
 			if(fulf === "ger") {
-				if(quarter === 0) {
-					gerdata[quarter] = units;
-				} else {
-					gerdata[quarter] = gerdata[quarter -1] + units;
-				}
 				if(grade !== "cr/ncr") {
 					geravg[0]++;
 					geravg[1]+=grade;
+					ger += units;
 				}
 			} else if(fulf === "major") {
-				if(quarter === 0) {
-					majordata[quarter] = units;
-				} else {
-					majordata[quarter] = majordata[quarter -1] + units;
-				}
 				if(grade !== "cr/ncr") {
 					majoravg[0]++;
 					majoravg[1]+=grade;
+					maj += units;
 				}
 			} else { // other
-				if(quarter === 0) {
-					otherdata[quarter] = units;
-				} else {
-					otherdata[quarter] = otherdata[quarter -1] + units;
-				}
 				if(grade !== "cr/ncr") {
 					otheravg[0]++;
 					otheravg[1]+=grade;
+					oth += units;
 				}
 			}
 		}
-	}	
+		gerdata[quarter] = (quarter === 0) ? ger : gerdata[quarter-1] + ger;
+		majordata[quarter] = (quarter === 0) ? maj : majordata[quarter-1] + maj; 
+		otherdata[quarter] = (quarter === 0) ? oth : otherdata[quarter-1] + oth; 
+
+	}
+
 
 	geravg = (geravg[0] === 0) ? 0: geravg[1]/geravg[0] ;
 	majoravg = (majoravg[0] === 0) ? 0: majoravg[1]/majoravg[0] ;
@@ -84,17 +80,50 @@ d3.json("courses.json", function(error, json) {
 	    .scale(y)
 	    .orient("left");
 
-	svg.append("g")
+	var graph = svg.append("g")
+					.attr("class", "tehgraph")
+      				.attr("transform", "translate("+ margin.left + "," + margin.top + ")")
+
+
+
+	graph.append("g")
       .attr("class", "x axis")
-      .attr("transform", "translate("+ margin.left + "," + (height + margin.top) + ")")
+      .attr("transform", "translate(0," + height + ")")
       .call(xAxis);
 
-	svg.append("g")
+	graph.append("g")
       .attr("class", "y axis")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
       .call(yAxis);
 
-    // var gerarea = d3.svg.area()
-    // 				.x(function(d) {return })
+    var color = d3.scale.category20().domain(["ger","major", "other"]);
+    
+    var gerarea = d3.svg.area()
+    				.x(function(d, i) {return x(i);})
+    				.y0(height)
+    				.y1(function(d) {return y(d);});
 
+    var majorarea = d3.svg.area()
+    				.x(function(d, i) {return x(i);})
+    				.y0(function(d,i) {return y(gerdata[i]);})
+    				.y1(function(d,i) {return y(gerdata[i] + d);});
+
+    var otherarea = d3.svg.area()
+    				.x(function(d, i) {return x(i);})
+    				.y0(function(d,i) {return y(gerdata[i] + majordata[i]);})
+    				.y1(function(d,i) {return y(gerdata[i] + majordata[i] + d);});
+
+    graph.append("path")
+    	.datum(gerdata)
+    	.attr("d", gerarea)
+    	.style("fill", color("ger"));
+
+   	graph.append("path")
+    	.datum(majordata)
+    	.attr("d", majorarea)
+    	.style("fill", color("major"));
+
+   	graph.append("path")
+    	.datum(otherdata)
+    	.attr("d", otherarea)
+    	.style("fill", color("other"));
 });
