@@ -48,9 +48,11 @@ d3.json("courses.json", function(error, json) {
 
 	}
 
-	geravg = (geravg[0] === 0) ? 0: geravg[1]/geravg[0] ;
-	majoravg = (majoravg[0] === 0) ? 0: majoravg[1]/majoravg[0] ;
-	otheravg = (otheravg[0] === 0) ? 0: otheravg[1]/otheravg[0] ;
+	var avgs = {};
+
+	avgs['ger'] = ((geravg[0] === 0) ? 0: geravg[1]/geravg[0]).toFixed(2) ;
+	avgs['maj'] = ((majoravg[0] === 0) ? 0: majoravg[1]/majoravg[0]).toFixed(2) ;
+	avgs['oth'] = ((otheravg[0] === 0) ? 0: otheravg[1]/otheravg[0]).toFixed(2) ;
 
 	// Set up margin stuff
 	var margin = {top: 60, right: 30, bottom: 30, left: 60},
@@ -97,6 +99,11 @@ d3.json("courses.json", function(error, json) {
     var color = d3.scale.category20().domain(["ger","major", "other"]);
     
     var classTypes = ["ger", "maj", "oth"];
+    var verbose = {
+    	"ger": "GER",
+    	"maj": "Major Requirement",
+    	"oth": "Other"
+    }
 
     function addIndex(arrs, idx) {
     		var tots = 0;
@@ -118,13 +125,29 @@ d3.json("courses.json", function(error, json) {
     		graph.append("path")
     				.datum(arrays[i])
     				.attr("d", area)
-    				.attr("class", names[i] + "arr removable")
+    				.attr("class", names[i] + " area removable")
     				.style("fill", color(names[i]))
     		y0arrs.push(arrays[i]);
     	}
     	if(arrays.length === 3) {
     		drawTotalProjection();
     	}
+    	// Hover areas
+	  	var tip = d3.tip()
+		  .attr('class', 'd3-tip')
+		  .direction('e')
+		  .style('z-index', 100)
+		  .offset([-10, 0])
+		  .html(function(d) {
+		    return "<div style='z-index:10'><span style='color:red'>" + verbose[d] + " GPA: " + avgs[d] + "</span></div>";
+		  });
+
+		graph.call(tip);
+
+		svg.selectAll(".area")
+		.data(names)
+		.on('mouseover', tip.show)
+		.on('mouseout', tip.hide);
     }	
 
 
@@ -205,6 +228,9 @@ d3.json("courses.json", function(error, json) {
   		}
   		redraw(datas,names);
   	}
+
+
+
 
 
 });
