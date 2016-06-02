@@ -142,6 +142,13 @@ d3.json("courses.json", function(error, json) {
   			.attr("y", -margin.left + 10)
   			.attr("transform", "rotate(270)");
 
+  	// Dotted line goal
+  	graph.append("line")
+  		.attr("class", "goalline")
+  		.style("stroke-dasharray", ("3, 3"))
+  		.attr({x1:x(1),y1:y(180),x2:x(12),y2:y(180)})
+  		.attr("");
+
 
 
 
