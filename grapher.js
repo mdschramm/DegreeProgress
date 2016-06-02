@@ -57,10 +57,7 @@ d3.json("courses.json", function(error, json) {
 	majoravg = (majoravg[0] === 0) ? 0: majoravg[1]/majoravg[0] ;
 	otheravg = (otheravg[0] === 0) ? 0: otheravg[1]/otheravg[0] ;
 
-	console.log(geravg,majoravg,otheravg);
-
-
-	// Set up size
+	// Set up margin stuff
 	var margin = {top: 60, right: 30, bottom: 30, left: 60},
 	width = 750 - margin.left - margin.right,
 	height = 500 - margin.top - margin.bottom;
@@ -71,7 +68,7 @@ d3.json("courses.json", function(error, json) {
 		.attr("height", height + margin.top + margin.bottom);
 
 	var x = d3.scale.linear()
-				.domain([1, 12])
+				.domain([0, 11])
 				.range([0,width]);
 
 	var maxUnits = 240;//12 20 unit quarters
@@ -96,5 +93,8 @@ d3.json("courses.json", function(error, json) {
       .attr("class", "y axis")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
       .call(yAxis);
+
+    // var gerarea = d3.svg.area()
+    // 				.x(function(d) {return })
 
 });
