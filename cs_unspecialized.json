@@ -1,0 +1,578 @@
+var requirements = {
+	"Elective Classes": {
+		"CS": ["CS 108", "CS 124", "CS 131", "CS 140","CS 142", "CS 144", "CS 145", "CS 147", "CS148","CS 149", "CS 156", "CS 157", "CS 164", "CS 166", "CS 167", "CS 205A", "CS 205B", "CS 210A", "CS 222", "CS 223A"
+		, "CS 224M", "CS 224N", "CS 224S", "CS 224U", "CS 224W", "CS 225A", "CS 225B", "CS 226",
+		 "CS 227", "CS 227B", "CS 228", "CS 228T", "CS 229", "CS 229A", "CS 229T", "CS 231A", "CS 240",
+		  "CS 240H", "CS 241", "CS 242", "CS 243", "CS 246", "CS 247", "CS 249A", "CS 249B", 
+		  "CS 254", "CS 255", "CS 258", "CS 261", "CS 262", "CS 263", "CS 265", "CS 267", 
+		  "CS 270", "CS 271", "CS 272", "CS 273A", "CS 274", "CS 276", "CS 277", "CS 295"],
+		"physics": ["BIO 41","BIO 42","BIO 43","BIO 44X","BIO 44Y", "CEE 63","CEE 64","CEE 70","CHEM 31A", "CHEM 31B","CHEM 31X","CHEM 33",
+		"CHEM 35","CHEM 36","CHEM 131","CHEM 135","EARTHSYS 5","EARTHSYS 10","ENGR 31","GES 1A","GES 1B","GES 1C"],
+		"TIC": ["BIOE 131","CLASSART 113","COMM 120W","COMM 169","CS 181","CS 181W","ENGR 130","ENGR 131","ENGR 145","HUMBIO 174",
+		"MS&E 181","MS&E 193","MS&E 197","POLISCI 114S","PUBLPOL 122","PUBLPOL 194"],
+		"engineering": ["ENGR 10","ENGR 14","ENGR 15","ENGR 25B","ENGR 30","ENGR 40A","ENGR 50",
+		"ENGR 60","ENGR 62", "ENGR 80","ENGR 90"],
+		"math": ["MATH 51","MATH 51M","MATH 52","MATH 53","MATH 51H", "MATH 52H", "MATH 53H","CME 100","CME 102","CME 104","CME 108","CME 192",
+		"ENGR 62","MATH 104","MATH 106","MATH 109","MATH 113","MATH 115","MATH 120","MATH 121","MATH 131P","MS&E 121"]
+	},
+	
+
+	"Requirements": {
+		"Mathematics": {
+			"units": 26,
+			"classes": [
+				{
+					"type": "class",
+					"number": "CS 103",
+					"name": "Mathematical Foundations of Computing",
+					"units": 5
+				},
+				{
+					"type": "class",
+					"number": "CS 109",
+					"name": "Introduction to Probability for Computer Scientists",
+					"units": 5
+				},
+				{
+					"type": "or",
+					"name": "Math Class Sequence",
+					"classes": [
+						{
+							"type": "all",
+							"name": "Math 40 sequence",
+							"classes": [
+								{
+									"type": "class",
+									"number": "MATH 41",
+									"name": "Calculus",
+									"units": 5
+								},
+								{	"type": "class",
+									"number": "MATH 42",
+									"name": "Calculus",
+									"units": 5
+								}
+							]
+						},
+						{
+							"type": "all",
+							"name": "Math 20 sequence",
+							"classes": [
+								{
+									"type": "class",
+									"number": "MATH 19",
+									"name": "Calculus",
+									"units": 3
+								},
+								{
+									"type": "class",
+									"number": "MATH 20",
+									"name": "Calculus",
+									"units": 3
+								},
+								{
+									"type": "class",
+									"number": "MATH 21",
+									"name": "Calculus",
+									"units": 4
+								}
+							]
+						},
+						{
+							"type": "AP",
+							"name": "AP Calculus"
+						}
+					]
+				},
+				{
+					"type": "elective",
+					"electives": "math"
+				}
+			],
+		},
+
+		"Science": {
+			"units": 11,
+			"classes": [
+				{
+					"type": "or",
+					"name": "Sequences for Physics",
+					"classes": [
+						{
+							"type": "all",
+							"name": "Physics 40 series",
+							"classes": [
+								{
+									"type": "or",
+									"name": "AP or Physics 41",
+									"classes": [
+										{
+											"type":"class",
+											"number": "PHYSICS 41",
+											"name": "Mechanics",
+											"units": 4
+										},
+										{
+											"type": "AP",
+											"name": "AP Physics: Mechanics"
+										}
+									]
+								},
+								{
+									"type": "or",
+									"name": "AP or Physics 43",
+									"classes": [
+										{
+											"type":"class",
+											"number": "PHYSICS 43",
+											"name": "Electricity and Magnetism",
+											"units": 4
+										},
+										{
+											"type": "AP",
+											"name": "AP Physics: E&M"
+										}
+									]
+								},
+							]
+						},
+						{
+							"type": "all",
+							"name": "Physics 60 series",
+							"classes": [
+								{
+									"type": "or",
+									"name": "Physics 61 or AP",
+									"classes": [
+										{
+											"type": "class",
+											"number": "PHYSICS 61",
+											"name": "Mechanics and Special Relativity",
+											"units": 4
+										},
+										{
+											"type": "AP",
+											"name": "AP Physics: Mechanics"
+										}
+									]
+								},
+								{
+									"type": "or",
+									"name": "Physics 63 or AP",
+									"classes": [
+										{
+											"type": "class",
+											"number": "PHYSICS 63",
+											"name": "Electricity, Magnetism, and Waves",
+											"units": 4
+										},
+										{
+											"type": "AP",
+											"name": "AP Physics: E&M"
+										}
+									]
+								}
+							]
+						},
+						{
+							"type": "all",
+							"name": "Physics 20 series",
+							"classes": [
+								{
+									"type": "or",
+									"name": "Physics or AP",
+									"classes": [
+										{
+											"type": "class",
+											"number": "PHYSICS 21",
+											"name": "Mechanics, Fluids, and Heat",
+											"units": 4
+										},
+										{
+											"type": "AP",
+											"AP": "AP Physics: Mechanics"
+										}
+									]
+								},
+								{
+									"type": "or",
+									"name": "Physics or AP",
+									"classes": [
+										{
+											"type": "class",
+											"number": "PHYSICS 23",
+											"name": "Electricity, Magnetism, and Optics",
+											"units": 4
+										},
+										{
+											"type": "AP",
+											"name": "AP Physics: E&M"
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"type": "or",
+					"name": "elective or AP",
+					"classes": [
+						{
+							"type": "elective",
+							"electives": "physics",
+						},
+						{
+							"type": "AP",
+							"name": "AP Chemistry"
+						}
+					]
+				}
+			]
+		},
+		"Engineering Fundamentals": {
+			"units": 13,
+			"classes": [
+				{
+					"type": "or",
+					"name": "ENGR 40 Requirment",
+					"classes": [
+						{
+							"type": "class",
+							"number": "ENGR 40",
+							"name": "Introductory Electronics",
+							"units": 5
+						},
+						{
+							"type": "class",
+							"number": "ENGR 40C",
+							"name": "Engineering Wireless Networks",
+							"units": 5
+						},
+						{
+							"type": "all",
+							"name": "E40A plus an elective",
+							"classes": [
+								{
+									"type": "class",
+									"number": "ENGR 40A",
+									"name": "Introductory Electronics",
+									"units": 3
+								},
+								{
+									"type": "elective",
+									"electives": "engineering"
+								}
+							]
+						}
+					]
+				},
+				{
+					"type": "or",
+					"name": "106b or 106X",
+					"classes": [
+						{
+							"type": "class",
+							"number": "CS 106B",
+							"name": "Programming Abstractions",
+							"units": 5
+						},
+						{
+							"type": "class",
+							"number": "CS 106X",
+							"name": "Programming Abstractions (Accelerated)",
+							"units": 5
+						}
+					]
+				},
+				{
+					"type": "elective",
+					"electives": "engineering"
+				}
+			]
+		},
+		"Technology in Society": {
+			"units": 3,
+			"classes": [
+				{
+					"type":"elective",
+					"electives": "TIC"
+				}
+			]
+		},
+		"Writing in the Major": {
+			"units": 0,
+			"classes": [
+				{
+					"type": "or",
+					"name": "Choose one of these classes",
+					"classes": [
+						{
+							"type": "class",
+							"number": "CS 181W",
+							"name": "Computers, Ethics, and Public Policy",
+							"units": 4
+						},
+						{
+							"type": "class",
+							"number": "CS 191W",
+							"name": "Writing Intensive Senior Project",
+							"units": 5
+						},
+						{
+							"type": "class",
+							"number": "CS 194W",
+							"name": "Software Project (WIM)",
+							"units": 5
+						},
+						{
+							"type": "class",
+							"number": "CS 210B",
+							"name": "Software Project Experience with Corporate Partners",
+							"units": 4
+						},
+						{
+							"type": "class",
+							"number": "CS 294W",
+							"name": "Writing Intensive Research Project in Computer Science",
+							"units": 3
+						}
+					]
+				}
+			]
+		},
+		"Core" : {
+			"units": 15,
+			"classes": [
+				{
+					"type": "class",
+					"number": "CS 107",
+					"name": "Computer Organization and Systems",
+					"units": 5
+				},
+				{
+					"type": "class",
+					"number": "CS 110",
+					"name": "Principles of Computer Science",
+					"units": 5
+				},
+				{
+					"type": "class",
+					"number": "CS 161",
+					"name": "Design and Analysis of Algorithms",
+					"units": 5
+				}
+			]
+		},
+		"Senior Project" : {
+			"units": 0,
+			"classes": [
+				{
+					"type": "or",
+					"name": "choose one class",
+					"classes": [
+						{
+							"type": "class",
+							"number": "CS 191",
+							"name": "Senior Project",
+							"units": 5
+						},
+						{
+							"type": "class",
+							"number": "CS 191W",
+							"name": "Writing Intensive Senior Project",
+							"units": 5
+						},
+						{
+							"type": "class",
+							"number": "CS 194",
+							"name": "Software Project",
+							"units": 5
+						},
+						{
+							"type": "class",
+							"number": "CS 194W",
+							"name": "Software Project (WIM)",
+							"units": 5
+						},
+						{
+							"type": "class",
+							"number": "CS 210B",
+							"name": "Software Project Experience with Corporate Partners",
+							"units": 4
+						},
+						{
+							"type": "class",
+							"number": "CS 294",
+							"name": "Research Project in Computer Science",
+							"units": 3
+						},
+						{
+							"type": "class",
+							"number": "CS 294W",
+							"name": "Writing Intensive Research Project in Computer Science",
+							"units": 3
+						}
+					]
+				}
+			]
+		},
+		"Unspecialized": {
+			"units": 25,
+			"classes": [
+				{
+					"type": "class",
+					"number": "CS 154",
+					"name": "Introduction to Automata and Complexity Theory",
+					"units": 4
+				},
+				{
+					"type": "or",
+					"name": "140 or 143",
+					"classes": [
+						{
+							"type": "class",
+							"number": "CS 140",
+							"name": "Operating Systems and Systems Programming",
+							"units": 4
+						},
+						{
+							"type": "class",
+							"number": "CS 143",
+							"name": "Compilers",
+							"units": 4
+						}
+					]
+				},
+				{
+					"type": "or",
+					"name": "one of many classes",
+					"classes": [
+						{
+							"type": "class",
+							"number": "CS 140",
+							"name": "Operating Systems and Systems Programming",
+							"units": 4
+						},
+						{
+							"type": "class",
+							"number": "CS 143",
+							"name": "Compilers",
+							"units": 4
+						},
+						{
+							"type": "class",
+							"number": "CS 144",
+							"name": "Introduction to Computer Networking",
+							"units": 4
+						},
+						{
+							"type": "class",
+							"number": "CS 155",
+							"name": "Computer and Network Security",
+							"units": 3
+						},
+						{
+							"type": "class",
+							"number": "CS 242",
+							"name": "Programming Languages",
+							"units": 3
+						},
+						{
+							"type": "class",
+							"number": "CS 244",
+							"name": "Advanced Topics in Networking",
+							"units": 4
+						},
+						{
+							"type": "class",
+							"number": "EE 108B",
+							"name": "Digital Systems 2",
+							"units": 4
+						}
+					]
+				},
+				{
+					"type": "or",
+					"name": "Pick from graduate classes",
+					"classes": [
+						{
+							"type": "class",
+							"number": "CS 221",
+							"name": "Artificial Intelligence: Principles and Techniques",
+							"units": 4
+						},
+						{
+							"type": "class",
+							"number": "CS 223A",
+							"name": "Introduction to Robotics",
+							"units": 3
+						},
+						{
+							"type": "class",
+							"number": "CS 228",
+							"name": "Probabilistic Graphical Models: Principles and Techniques",
+							"units": 4
+						},
+						{
+							"type": "class",
+							"number": "CS 229",
+							"name": "Machine Learning",
+							"units": 4
+						},
+						{
+							"type": "class",
+							"number": "CS 231A",
+							"name": "Computer Vision: From 3D Reconstruction to Recognition",
+							"units": 4
+						}
+					]
+				},
+				{
+					"type": "or",
+					"name": "pick one again",
+					"classes": [
+						{
+							"type": "class",
+							"number": "CS 145",
+							"name": "Introduction to Databases",
+							"units": 4
+						},
+						{
+							"type": "class",
+							"number": "CS 147",
+							"name": "Introduction to Human-Computer Interaction Design",
+							"units": 4
+						},
+						{
+							"type": "class",
+							"number": "CS 148",
+							"name": "Introduction to Computer Graphics and Imaging",
+							"units": 4
+						},
+						{
+							"type": "class",
+							"number": "CS 248",
+							"name": "Interactive Computer Graphics",
+							"units": 4
+						},
+						{
+							"type": "class",
+							"number": "CS 262",
+							"name": "Computational Genomics",
+							"units": 3
+						}
+					]
+				},
+				{
+					"type": "elective",
+					"electives": "CS",
+				},
+				{
+					"type": "elective",
+					"electives": "CS",
+				}
+			]
+		}
+	}
+}
