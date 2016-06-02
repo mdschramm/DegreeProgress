@@ -107,7 +107,7 @@ d3.json("courses.json", function(error, json) {
     }
 
     function redraw(arrays, names) {
-    	graph.selectAll(".area").remove();
+    	graph.selectAll(".removable").remove();
     	var y0arrs = [];
     	
     	for(var i = 0; i < arrays.length; i++) {
@@ -118,7 +118,7 @@ d3.json("courses.json", function(error, json) {
     		graph.append("path")
     				.datum(arrays[i])
     				.attr("d", area)
-    				.attr("class", names[i] + "arr area")
+    				.attr("class", names[i] + "arr removable")
     				.style("fill", color(names[i]))
     		y0arrs.push(arrays[i]);
     	}
@@ -134,7 +134,7 @@ d3.json("courses.json", function(error, json) {
     	var slope =  (endy - 
     	addIndex([gerdata,majordata,otherdata],0)) / (endx - 1);
     	graph.append("line")
-  		.attr("class", "projline")
+  		.attr("class", "projline removable")
   		.style("stroke-dasharray", ("2, 2"))
   		.attr({x1:x(endx),
   			y1:y(endy),
