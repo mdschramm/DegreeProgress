@@ -233,7 +233,30 @@ d3.json("courses.json", function(error, json) {
 	  	}
 
 	  	  	// CR/NR BAR!!
-
+	  	  // get data
+	  	var creditUnits = 0;
+	  	var activityUnits = 0;
+	  	for (var i = 0; i < json.length; i++) {
+	  		var quarter = json[i];
+	  		for (var j = 0; j < quarter.length; j++) {
+	  			var curClass = quarter[j];
+	  			if (curClass[3] == "cr/ncr") { // add to credit list
+	  				creditUnits += curClass[2];
+	  				console.log("adding " + curClass[0]);
+	  				if (curClass[1] == "act") {
+	  					activityUnits += curClass[2];
+	  					console.log("adding act " + curClass[0]);
+	  				}
+	  			}
+	  		}
+	  	}
+	  	if (creditUnits < 10) {
+	  		creditUnits = "0"+creditUnits;
+	  	}
+	  	$("#actunits").text(""+activityUnits+"/8");
+	  	$("#creditunits").text(""+creditUnits+"/36");
+	  	var percentCredit = creditUnits/36;
+	  	var percentAct = activityUnits/36;
 	  	//first make the labels
 
 		function createMultiBar(container, Shape, optsArray) {
@@ -254,7 +277,7 @@ d3.json("courses.json", function(error, json) {
 		// var $container = $("#labels1");
 		// $container.append("<line x1='0' y1='0' x2='0' y2='10' stroke='black' stroke-width='5'/>");
 
-		[0.2, 0.05].forEach(function(val, index) {
+		[percentCredit, percentAct].forEach(function(val, index) {
 			var duration = 800;
 			if (index == 0) {
 				bars[index].animate(val, {

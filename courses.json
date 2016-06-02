@@ -13,18 +13,21 @@
 	[
 		["psych1", "other", 5, "cr/ncr"],
 		["cs107", "major", 5,3.4],
-		["cs155", "major", 3,3.1]
+		["cs155", "major", 3,3.1],
+		["PE144", "act", 1, "cr/ncr"]
 	],
 	[
 		["pwr2ck", "ger", 5,3.5],
 		["engr40", "major", 5,4.1],
 		["cs154", "major", 4,3.9],
-		["spanlang1", "ger", 5,3.0]		
+		["spanlang1", "ger", 5,3.0],
+		["PE145", "act", 1, "cr/ncr"]
 	],
 	[
 		["cs103", "major", 5,3.2],
 		["cs110", "major", 5,3.5],
-		["spanlang2", "ger", 5,3.2]
+		["spanlang2", "ger", 5,3.2],
+		["wellness195", "act", 2, "cr/ncr"]
 	],
 	[
 		["spanlang3", "ger", 5,3.4],
