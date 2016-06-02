@@ -1,0 +1,34 @@
+[
+	[
+		["phil2", "ger",5,3.5],
+		["cs106a", "major", 5,3.7],
+		["math51", "ger", 5, 3.8]
+	],
+	[
+		["pwr1ao", "ger", 5,4.0],
+		["think29", "ger", 4,2.9],
+		["cs106b", "major", 5, 3.3],
+		["econ1", "ger", 5,3.9]
+	],
+	[
+		["psych1", "other", 5, "cr/ncr"],
+		["cs107", "major", 5,3.4],
+		["cs155", "major", 3,3.1]
+	],
+	[
+		["pwr2ck", "ger", 5,3.5],
+		["engr40", "major", 5,4.1],
+		["cs154", "major", 4,3.9],
+		["spanlang1", "ger", 5,3.0]		
+	],
+	[
+		["cs103", "major", 5,3.2],
+		["cs110", "major", 5,3.5],
+		["spanlang2", "ger", 5,3.2]
+	],
+	[
+		["spanlang3", "ger", 5,3.4],
+		["cs143", "major", 4,3.4],
+		["bio150", "ger", 5,3.8]
+	]
+]
