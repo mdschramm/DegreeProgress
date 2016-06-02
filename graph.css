@@ -48,8 +48,8 @@ image {
 /* Style northward tooltips differently */
 .d3-tip.n:after {
   margin: -1px 0 0 0;
-  /*top: 70%;
-  left: -50%;*/
+  top: 70%;
+  left: -50%;
 }
 
 
