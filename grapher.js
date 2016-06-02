@@ -154,6 +154,45 @@ d3.json("courses.json", function(error, json) {
   		.attr("");
 
 
+  	// CR/NR BAR!!
+
+  	//first make the labels
+
+	function createMultiBar(container, Shape, optsArray) {
+	    return optsArray.map(function(opts) {
+	        return new Shape(container, opts);
+	    });
+	}
+
+	var bars = createMultiBar(
+	    '#container',
+	    ProgressBar.Line,
+	    [
+	        {color: '#FCB03C', strokeWidth: 3, trailColor: 'LightGrey', trailWidth: 1.2},
+			{color: 'blue', strokeWidth: 3}
+		]
+	);
+	// svg.append("line")
+	// var $container = $("#labels1");
+	// $container.append("<line x1='0' y1='0' x2='0' y2='10' stroke='black' stroke-width='5'/>");
+
+	[0.2, 0.05].forEach(function(val, index) {
+		var duration = 800;
+		if (index == 0) {
+			bars[index].animate(val, {
+	    		duration: 1000,
+	    		easing: 'easeInOut'
+	    	});
+		} else {
+			bars[index].animate(val, {
+	    		duration: duration,
+	    		easing: 'easeInOut',
+	    	});
+		}
+	});
+
+
+
 
 
 });

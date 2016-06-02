@@ -137,3 +137,61 @@ image {
   margin-top: 1em;
   margin-bottom: 1em;
 }
+
+/* FOR CR/NR BAR */
+#CRNR {
+}
+#container {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  /*display: inline;*/
+  /*float: left;*/
+}
+#container1 {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  width: 800px;
+  height: 90px;
+}
+#container1 > svg {
+    width: 100%;
+    display: block;
+    position: absolute;
+}
+#container {
+    width: 600px;
+    height: 90px;
+    position: relative;
+    /*border-right: 2px solid black;*/
+}
+
+#container > svg {
+    width: 100%;
+    display: block;
+    position: absolute;
+}
+
+
+ /* body {
+    text-align: center;
+  }
+  .container-bar {
+    display: inline-block;
+    position: relative;
+    text-align: left;
+  }
+  .info {
+    position: absolute;
+    right: 0px;
+  }
+  .progress {
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  .bar {
+    fill: 'steelblue';
+  }*/
