@@ -1,9 +1,5 @@
 'use strict';
 
-// test json object for degree requirement
-console.log(requirements);
-
-// d3.json("prereqs.json", function(error, json) {
 // Draw stacked line chart
 d3.json("courses.json", function(error, json) {
 	if (error) return console.warn(error);
@@ -100,38 +96,33 @@ d3.json("courses.json", function(error, json) {
 
     var color = d3.scale.category20().domain(["ger","major", "other"]);
     
-    var gerarea = d3.svg.area()
-    				.x(function(d, i) {return x(i+1);})
-    				.y0(height)
-    				.y1(function(d) {return y(d);});
+    var classTypes = ["ger", "maj", "oth"];
 
-    var majorarea = d3.svg.area()
-    				.x(function(d, i) {return x(i+1);})
-    				.y0(function(d,i) {return y(gerdata[i]);})
-    				.y1(function(d,i) {return y(gerdata[i] + d);});
+    function redraw(arrays, names) {
+    	graph.selectAll(".area").remove();
+    	var y0arrs = [];
+    	function addIndex(arrs, idx) {
+    		var tots = 0;
+    		for(var i = 0; i < arrs.length; i++) {
+    			tots += arrs[i][idx];
+    		}
+    		return tots;
+    	}
+    	for(var i = 0; i < arrays.length; i++) {
+    		var area = d3.svg.area()
+    					.x(function(d,i) {return x(i+1);})
+    					.y0(function(d,i){return y(addIndex(y0arrs, i));})
+    					.y1(function(d,i){return y(addIndex(y0arrs, i) + d);});
+    		graph.append("path")
+    				.datum(arrays[i])
+    				.attr("d", area)
+    				.attr("class", names[i] + "arr area")
+    				.style("fill", color(names[i]))
+    		y0arrs.push(arrays[i]);
+    	}
+    }
 
-    var otherarea = d3.svg.area()
-    				.x(function(d, i) {return x(i+1);})
-    				.y0(function(d,i) {return y(gerdata[i] + majordata[i]);})
-    				.y1(function(d,i) {return y(gerdata[i] + majordata[i] + d);});
-
-    graph.append("path")
-    	.datum(gerdata)
-    	.attr("d", gerarea)
-    	.attr("class","gerarea")
-    	.style("fill", color("ger"));
-
-   	graph.append("path")
-    	.datum(majordata)
-    	.attr("d", majorarea)
-    	.attr("class","majorarea")
-    	.style("fill", color("major"));
-
-   	graph.append("path")
-    	.datum(otherdata)
-    	.attr("d", otherarea)
-    	.attr("class","otherarea")
-    	.style("fill", color("other"));
+    redraw([gerdata, majordata, otherdata], classTypes);
 
     // X label
     graph.append("text")
@@ -150,20 +141,49 @@ d3.json("courses.json", function(error, json) {
   	graph.append("line")
   		.attr("class", "goalline")
   		.style("stroke-dasharray", ("3, 3"))
-  		.attr({x1:x(1),y1:y(180),x2:x(12),y2:y(180)})
-  		.attr("");
+  		.attr({x1:x(1),y1:y(180),x2:x(12),y2:y(180)});
 
   	// filter listeners
+  	var gerShown = true;
+  	var majShown = true;
+  	var othShown = true;
+
   	$('.filterall').click(function(e) {
-  		console.log(e);
+  		gerShown = true;
+	  	majShown = true;
+	  	othShown = true;
+    	redraw([gerdata, majordata, otherdata], classTypes);
   	});
   	$('.filterger').click(function(e) {
-  		console.log(e);
+  		gerShown = !gerShown;
+  		refilter();
   	});
   	$('.filtermaj').click(function(e) {
-  		console.log(e);
+  		majShown = !majShown;
+  		refilter();
   	});
   	$('.filteroth').click(function(e) {
-  		console.log(e);
+  		othShown = !othShown;
+  		refilter();
   	});
+
+  	function refilter() {
+  		var datas = [];
+  		var names = [];
+  		if(gerShown) {
+  			datas.push(gerdata);
+  			names.push("ger")
+  		}
+  		if(majShown) {
+  			datas.push(majordata);
+  			names.push("maj")
+  		}
+  		if(othShown) {
+  			datas.push(otherdata);
+  			names.push("oth")
+  		}
+  		redraw(datas,names);
+  	}
+
+
 });
