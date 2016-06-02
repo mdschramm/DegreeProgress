@@ -3,9 +3,9 @@
 // Draw stacked line chart
 d3.json("courses.json", function(error, json) {
 	d3.json("cs_unspecialized.json", function(cuerror, cujson) {
-		console.log(cujson);
 		if (error) return console.warn(error);
 		//process data
+		console.log(cujson);
 		var gerdata = [0,0,0,0,0,0];
 		var majordata= [0,0,0,0,0,0];
 		var otherdata = [0,0,0,0,0,0];
