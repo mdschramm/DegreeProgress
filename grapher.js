@@ -1,5 +1,9 @@
 'use strict';
 
+// test json object for degree requirement
+console.log(requirements);
+
+// d3.json("prereqs.json", function(error, json) {
 // Draw stacked line chart
 d3.json("courses.json", function(error, json) {
 	if (error) return console.warn(error);
