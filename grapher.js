@@ -98,16 +98,18 @@ d3.json("courses.json", function(error, json) {
     
     var classTypes = ["ger", "maj", "oth"];
 
-    function redraw(arrays, names) {
-    	graph.selectAll(".area").remove();
-    	var y0arrs = [];
-    	function addIndex(arrs, idx) {
+    function addIndex(arrs, idx) {
     		var tots = 0;
     		for(var i = 0; i < arrs.length; i++) {
     			tots += arrs[i][idx];
     		}
     		return tots;
-    	}
+    }
+
+    function redraw(arrays, names) {
+    	graph.selectAll(".area").remove();
+    	var y0arrs = [];
+    	
     	for(var i = 0; i < arrays.length; i++) {
     		var area = d3.svg.area()
     					.x(function(d,i) {return x(i+1);})
@@ -120,8 +122,27 @@ d3.json("courses.json", function(error, json) {
     				.style("fill", color(names[i]))
     		y0arrs.push(arrays[i]);
     	}
-    }
+    	if(arrays.length === 3) {
+    		drawTotalProjection();
+    	}
+    }	
 
+
+    function drawTotalProjection() {
+    	var endy = addIndex([gerdata,majordata,otherdata],gerdata.length - 1);
+    	var endx = gerdata.length;
+    	var slope =  (endy - 
+    	addIndex([gerdata,majordata,otherdata],0)) / (endx - 1);
+    	graph.append("line")
+  		.attr("class", "projline")
+  		.style("stroke-dasharray", ("2, 2"))
+  		.attr({x1:x(endx),
+  			y1:y(endy),
+  			x2:x(12),
+  			y2:y(endy +
+  			slope*(12 - endx))
+  		});
+    }
     redraw([gerdata, majordata, otherdata], classTypes);
 
     // X label

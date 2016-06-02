@@ -4,7 +4,8 @@ body {
 
 .axis path,
 .axis line, 
-.goalline {
+.goalline, 
+.projline {
   fill: none;
   stroke: #000;
   shape-rendering: crispEdges;
