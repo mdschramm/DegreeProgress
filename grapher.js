@@ -5,7 +5,6 @@ d3.json("courses.json", function(error, json) {
 	d3.json("cs_unspecialized.json", function(cuerror, cujson) {
 		if (error) return console.warn(error);
 		//process data
-		console.log(cujson);
 		var gerdata = [0,0,0,0,0,0];
 		var majordata= [0,0,0,0,0,0];
 		var otherdata = [0,0,0,0,0,0];
@@ -14,13 +13,14 @@ d3.json("courses.json", function(error, json) {
 		var majoravg = [0,0];
 		var otheravg = [0,0];
 
-
+		var takenList = [];
 		for(var quarter=0; quarter < json.length; quarter++){
 			var ger = 0;
 			var maj = 0;
 			var oth = 0;
 			for(var course=0; course< json[quarter].length; course++) {
 				var info = json[quarter][course];
+				takenList.push(info);
 				var fulf = info[1];
 				var units = info[2];
 				var grade = info[3];
@@ -291,5 +291,45 @@ d3.json("courses.json", function(error, json) {
 		    	});
 			}
 		});
+
+		//classList
+		function checkFulf(requirement, remClasses) {
+			var courses = requirement.classes;
+			var unitsRem = requirement.units;
+			var unfulfilled = []
+			for(var i=0; i < courses.length; i++) {
+				var course = courses[i];
+				if(course.type === "class") {
+					if (hasTakenCourse(course,remClasses)) {
+						var unitsCompleted = removeCourse(course, remClasses);
+						unitsRem -= unitsCompleted;
+					} else {
+						unfulfilled.push(course);
+					}
+				} else if(course.type === "or") {
+					var innerRes = checkFulf(course, remClasses);
+					var inUnitsRem = innerRes[0];
+					var inUnitsRem = innerRes[0];
+					
+				} else if(course.type === "elective"){
+
+				}
+			}
+			return [unitsRem, unfulfilled];
+		}
+
+		for(var req in cujson.Requirements) {
+			var info = checkFulf(cujson.Requirements[req], takenList.split());
+			var remUnits = info[0];
+			var fulfOptions = info[1];
+			if (remUnits > 0) {
+				d3.select('#classList > tbody')
+				.append("tr")
+				.attr("class", req + "reqRow")
+				.append("td")
+				.html(req);
+				addRowHover(req + "reqRow", remUnits, fulfOptions);
+			}
+		}
 	});
 });

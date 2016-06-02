@@ -1,37 +1,37 @@
 [
 	[
-		["phil2", "ger",5,3.5],
-		["cs106a", "major", 5,3.7],
-		["math51", "ger", 5, 3.8]
+		["PHIL 2", "ger",5,3.5],
+		["CS 106A", "major", 5,3.7],
+		["MATH 51", "ger", 5, 3.8]
 	],
 	[
-		["pwr1ao", "ger", 5,4.0],
-		["think29", "ger", 4,2.9],
-		["cs106b", "major", 5, 3.3],
-		["econ1", "ger", 5,3.9]
+		["PWR 1AO", "ger", 5,4.0],
+		["THINK 29", "ger", 4,2.9],
+		["CS 106B", "major", 5, 3.3],
+		["ECON 1", "ger", 5,3.9]
 	],
 	[
-		["psych1", "other", 5, "cr/ncr"],
-		["cs107", "major", 5,3.4],
-		["cs155", "major", 3,3.1],
-		["PE144", "act", 1, "cr/ncr"]
+		["PSYCH 1", "other", 5, "cr/ncr"],
+		["CS 107", "major", 5,3.4],
+		["CS 155", "major", 3,3.1],
+		["PE 144", "act", 1, "cr/ncr"]
 	],
 	[
-		["pwr2ck", "ger", 5,3.5],
-		["engr40", "major", 5,4.1],
-		["cs154", "major", 4,3.9],
-		["spanlang1", "ger", 5,3.0],
-		["PE145", "act", 1, "cr/ncr"]
+		["PWR 2CK", "ger", 5,3.5],
+		["ENGR 40", "major", 5,4.1],
+		["CS 154", "major", 4,3.9],
+		["SPANLANG 1", "ger", 5,3.0],
+		["PE 145", "act", 1, "cr/ncr"]
 	],
 	[
-		["cs103", "major", 5,3.2],
-		["cs110", "major", 5,3.5],
-		["spanlang2", "ger", 5,3.2],
-		["wellness195", "act", 2, "cr/ncr"]
+		["CS 103", "major", 5,3.2],
+		["CS 110", "major", 5,3.5],
+		["SPANLANG 2", "ger", 5,3.2],
+		["WELLNESS 195", "act", 2, "cr/ncr"]
 	],
 	[
-		["spanlang3", "ger", 5,3.4],
-		["cs143", "major", 4,3.4],
-		["bio150", "other", 5,3.8]
+		["SPANLANG 3", "ger", 5,3.4],
+		["CS 143", "major", 4,3.4],
+		["BIO 150", "other", 5,3.8]
 	]
 ]
