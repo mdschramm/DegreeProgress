@@ -107,6 +107,51 @@ d3.json("courses.json", function(error, json) {
 	  			.attr("transform", "rotate(270)");
 
 	  	// Dotted line goal
+	  	var goallineColor = function() {
+			// color picker for pace line
+			var colors = ["#6EFF00", "#C4FF00", "#FFEB00", "#FF8900", "#FF1000"];
+			var numQuarters = json.length;
+			var numUnitsTaken = 0;
+			var countUnits = function() {
+				for (var i = 0; i < numQuarters; i++) {
+					var curQuarter = json[i]; //units
+					for (var j = 0; j < curQuarter.length; j++) {
+						var units = curQuarter[j][2];
+						numUnitsTaken += units;
+					}
+				}
+			}
+			countUnits();
+			var unitsLeft = 180 - numUnitsTaken;
+			var quartersLeft = 12 - numQuarters;
+			var paceLeft = unitsLeft/quartersLeft;
+			var pickColor = function() {
+				var pickedColor = null;
+				console.log(paceLeft);
+				if (paceLeft <= 14) {
+					pickedColor = colors[0];
+					console.log(pickedColor);
+				} else if (paceLeft <= 15) {
+					pickedColor = colors[1];
+				} else if (paceLeft <= 16) {
+					pickedColor = colors[2];
+				} else if (paceLeft <= 17) {
+					pickedColor = colors[3];
+				} else { //greater than 17, in trouble!
+					pickedColor = colors[4];
+				}
+				//now we have color, pick saturation
+				// quartersLeft = 9;
+				var sat = ((quartersLeft/12)-0.08333)*100;
+				var colorObj = tinycolor(pickedColor);
+				var finalColor = colorObj.desaturate(sat).toString();
+				// $("#TEST").css('background-color', finalColor);
+				return finalColor;
+
+			}
+			return pickColor();
+		};
+
 	  	graph.append("line")
 	  		.attr("class", "goalline")
 	  		.style("stroke-dasharray", ("3, 3"))
@@ -218,6 +263,7 @@ d3.json("courses.json", function(error, json) {
 	    	graph.append("line")
 	  		.attr("class", "projline removable")
 	  		.style("stroke-dasharray", ("2, 2"))
+	  		.style("stroke", goallineColor())
 	  		.attr({x1:x(endx),
 	  			y1:y(endy),
 	  			x2:x(12),
@@ -515,66 +561,6 @@ d3.json("courses.json", function(error, json) {
 			return tree;
 			// return at end
 		};
-
-		// color picker for pace line
-		var colors = ["#6EFF00", "#C4FF00", "#FFEB00", "#FF8900", "#FF1000"];
-		// var colors = ["rgb(110, 255, 0)", "rgb(196, 255, 0)", "rgb(255, 235, 0)", "rgb(255, 137, 0)", "rgb(255, 16, 0)"];
-		var numQuarters = json.length;
-		var numUnitsTaken = 0;
-		var countUnits = function() {
-			for (var i = 0; i < numQuarters; i++) {
-				var curQuarter = json[i]; //units
-				for (var j = 0; j < curQuarter.length; j++) {
-					var units = curQuarter[j][2];
-					numUnitsTaken += units;
-				}
-			}
-		}
-		countUnits();
-		console.log(numUnitsTaken);
-		var unitsLeft = 180 - numUnitsTaken;
-		var quartersLeft = 12 - numQuarters;
-		var paceLeft = 18;//unitsLeft/quartersLeft;
-		console.log(unitsLeft);
-		console.log(quartersLeft);
-		console.log(paceLeft);
-		var pickColor = function() {
-			var pickedColor = null;
-			console.log(paceLeft);
-			if (paceLeft <= 14) {
-				pickedColor = colors[0];
-				console.log(pickedColor);
-			} else if (paceLeft <= 15) {
-				pickedColor = colors[1];
-			} else if (paceLeft <= 16) {
-				pickedColor = colors[2];
-			} else if (paceLeft <= 17) {
-				pickedColor = colors[3];
-			} else { //greater than 17, in trouble!
-				pickedColor = colors[4];
-			}
-			//now we have color, pick saturation
-			quartersLeft = 9;
-			var sat = ((quartersLeft/12)-0.08333)*100;
-			console.log(sat);
-			console.log(pickedColor);
-			var colorObj = tinycolor(pickedColor);
-			var finalColor = colorObj.desaturate(sat).toString();
-			// var finalColor = colorObj.rgbArray();
-			// var colorString = "rgb("
-			// for (var k = 0; k < finalColor.length; k++) {
-			// 	if (k == (finalColor.length-1)) {
-			// 		colorString += finalColor[k];
-			// 	} else {
-			// 		colorString += finalColor[k] + ",";
-			// 	}
-			// }
-			// colorString += ")"
-			// console.log(colorString);
-			$("#TEST").css('background-color', finalColor);
-
-		}
-		pickColor();
 	});
 	});
 });
