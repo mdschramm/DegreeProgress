@@ -53,8 +53,12 @@ d3.json("courses.json", function(error, json) {
 
 		// Set up margin stuff
 		var margin = {top: 60, right: 30, bottom: 30, left: 60},
-		width = 750 - margin.left - margin.right,
-		height = 500 - margin.top - margin.bottom;
+		// width = 750 - margin.left - margin.right,
+		// height = 500 - margin.top - margin.bottom;
+
+		//try with NEW HEIGHTS
+		width = 500 - margin.left - margin.right,
+		height = 300 - margin.top - margin.bottom;
 
 		// add another svg for legend
 		var svg = d3.select("#chart").append("svg")
@@ -122,8 +126,10 @@ d3.json("courses.json", function(error, json) {
 				}
 			}
 			countUnits();
+			var isAll = false;
 			if (unitsLeft == undefined) {
 				unitsLeft = 180 - numUnitsTaken;
+				isAll = true;
 			}
 
 			if (totalUnits == undefined) {
@@ -131,10 +137,10 @@ d3.json("courses.json", function(error, json) {
 			}
 			var quartersLeft = 12 - numQuarters;
 			var paceLeft = unitsLeft/quartersLeft;
-			var pickColor = function() {
+			var pickColor = function(isAll) {
 				var pickedColor = null;
-				console.log(paceLeft);
-				if (unitsLeft == undefined) {
+				
+				if (isAll) {
 					if (paceLeft <= 14) {
 						pickedColor = colors[0];
 						console.log(pickedColor);
@@ -147,6 +153,7 @@ d3.json("courses.json", function(error, json) {
 					} else { //greater than 17, in trouble!
 						pickedColor = colors[4];
 					}
+					console.log("PICKED!: " + pickedColor);
 				} else { //for major
 					if (paceLeft <= 5) {
 						pickedColor = colors[0];
@@ -160,6 +167,7 @@ d3.json("courses.json", function(error, json) {
 					} else { //greater than 17, in trouble!
 						pickedColor = colors[4];
 					}
+					console.log("not all: " + pickedColor);
 				}
 				//now we have color, pick saturation
 				// quartersLeft = 9;
@@ -170,7 +178,7 @@ d3.json("courses.json", function(error, json) {
 				return finalColor;
 
 			}
-			return pickColor();
+			return pickColor(isAll);
 		};
 
 	    var color = d3.scale.category20().domain(["ger","major", "other"]);
@@ -237,21 +245,27 @@ d3.json("courses.json", function(error, json) {
 	    		});
 	    	}
 	    	//Hover areas
-		 //  	var tip = d3.tip()
-			//   .attr('class', 'd3-tip')
-			//   .direction('e')
-			//   .style('z-index', 100)
-			//   .offset([-5, 0])
-			//   .html(function(d) {
-			//     return "<div style='z-index:10'><span style='color:white'>" + verbose[d] + " GPA: " + avgs[d] + "</span></div>";
-			//   });
+		  	var tip = d3.tip()
+			  .attr('class', 'd3-tip')
+			  .direction('e')
+			  .style('z-index', 100)
+			  .style('margin-bottom', '30px')
+			  .offset([-5, 0])
+			  .html(function(d) {
+			  	var gpa = avgs[d];
+			  	console.log(gpa);
+			  	if (gpa == "NaN") {
+			  		gpa = "No classes taken for credit yet";
+			  	} 
+			    return "<div style='z-index:10'><span style='color:white'>" + verbose[d] + " GPA: " + gpa + "</span></div>";
+			  });
 
-			// graph.call(tip);
+			graph.call(tip);
 
-			// svg.selectAll(".area")
-			// .data(names)
-			// .on('mouseover', tip.show)
-			// .on('mouseout', tip.hide);
+			svg.selectAll(".area")
+			.data(names)
+			.on('mouseover', tip.show)
+			.on('mouseout', tip.hide);
 			
 			/**** SAVE DO AFTER POSTER!!! ***/
 			// var majText = "Major GPA: " + avgs.maj;
@@ -328,24 +342,68 @@ d3.json("courses.json", function(error, json) {
 	  	var majShown = true;
 	  	var othShown = true;
 
-	  	$('.filterall').click(function(e) {
-	  		gerShown = true;
-		  	majShown = true;
-		  	othShown = true;
-	    	redraw([gerdata, majordata, otherdata], classTypes);
-	  	});
-	  	$('.filterger').click(function(e) {
+	  	// $('#toggleAll').change(function() {
+	  	// 	// alert("Got em");
+	  	// 	$('#toggleGER').bootstrapToggle('on');
+	  	// 	$('#toggleMajor').bootstrapToggle('on');
+	  	// 	$('#toggleOther').bootstrapToggle('on');
+	  	// 	gerShown = true;
+		  // 	majShown = true;
+		  // 	othShown = true;
+	   // 		redraw([gerdata, majordata, otherdata], classTypes);
+	  	// });
+
+	  	$('#toggleGER').change(function() {
+	  		// alert("Got em");
 	  		gerShown = !gerShown;
+	  		// if (gerShown && majShown && othShown) {
+	  		// 	$('#toggleAll').bootstrapToggle('on');
+	  		// } else {
+	  		// 	$('#toggleAll').bootstrapToggle('off');
+	  		// }
 	  		refilter();
 	  	});
-	  	$('.filtermaj').click(function(e) {
+
+	  	$('#toggleMajor').change(function() {
 	  		majShown = !majShown;
+	  		// if (gerShown && majShown && othShown) {
+	  		// 	$('#toggleAll').bootstrapToggle('on');
+	  		// } else {
+	  		// 	$('#toggleAll').bootstrapToggle('off');
+	  		// }
 	  		refilter();
 	  	});
-	  	$('.filteroth').click(function(e) {
+
+	  	$('#toggleOther').change(function() {
 	  		othShown = !othShown;
+	  		// if (gerShown && majShown && othShown) {
+	  		// 	$('#toggleAll').bootstrapToggle('on');
+	  		// } else {
+	  		// 	$('#toggleAll').bootstrapToggle('off');
+	  		// }
 	  		refilter();
 	  	});
+
+	  	// $('.filterall').click(function(e) {
+	  	// 	gerShown = true;
+		  // 	majShown = true;
+		  // 	othShown = true;
+	   //  	redraw([gerdata, majordata, otherdata], classTypes);
+	  	// });
+	  	// $('.filterger').click(function(e) {
+	  	// 	gerShown = !gerShown;
+	  	// 	refilter();
+	  	// });
+	  	// $('.filtermaj').click(function(e) {
+	  	// 	majShown = !majShown;
+	  	// 	refilter();
+	  	// });
+	  	// $('.filteroth').click(function(e) {
+	  	// 	othShown = !othShown;
+	  	// 	refilter();
+	  	// });
+// new toggle
+
 
 	  	function refilter() {
 	  		var datas = [];
@@ -399,7 +457,7 @@ d3.json("courses.json", function(error, json) {
 		}
 
 		var bars = createMultiBar(
-		    '#container',
+		    '#container2',
 		    ProgressBar.Line,
 		    [
 		        {color: '#FCB03C', strokeWidth: 3, trailColor: 'LightGrey', trailWidth: 1.2},
@@ -426,20 +484,20 @@ d3.json("courses.json", function(error, json) {
 		});
 
 		// Now let's do the major %/total left meter
-		var percent = 0.75;
+		var percent = 0.97;
 		var bar = new ProgressBar.Circle("#majorPercent", {
 		  color: '#aaa',
 		  // This has to be the same size as the maximum width to
 		  // prevent clipping
-		  strokeWidth: 6,
-		  trailWidth: 2,
+		  strokeWidth: 7,
+		  trailWidth: 3,
 		  easing: 'easeInOut',
 		  duration: 1300,
 		  text: {
 		    autoStyleContainer: false
 		  },
-		  from: { color: '#FFEA82', width: 1 },
-		  to: { color: '#ED6A5A', width: 4 },
+		  from: { color: '#FFEA82', width: 2 },
+		  to: { color: '#ED6A5A', width: 7 },
 		  // Set default step function for all animate calls
 		  step: function(state, circle) {
 		    circle.path.setAttribute('stroke', state.color);
@@ -455,7 +513,7 @@ d3.json("courses.json", function(error, json) {
 		  }
 		});
 		bar.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
-		bar.text.style.fontSize = '6rem';
+		bar.text.style.fontSize = '2.5rem';
 
 		bar.animate(percent);
 
@@ -475,6 +533,7 @@ d3.json("courses.json", function(error, json) {
 		}
 
 		var remClasses = takenList.slice();
+		// console.log(remClasses);
 		var electives = cujson["Elective Classes"];
 
 		function checkFulf(requirement, remClasses, fulfillType, remUnits) {
@@ -542,6 +601,8 @@ d3.json("courses.json", function(error, json) {
 				addRowHover(req, remUnits[0], unfulfilled);
 			}
 		}
+
+		console.log(remClasses);
 
 
 

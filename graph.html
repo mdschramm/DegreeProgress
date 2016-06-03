@@ -3,9 +3,12 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <!-- <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=320, height=device-height, target-densitydpi=medium-dpi" /> -->
+
    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="graph.css">
   <link rel="stylesheet" type="text/css" href="tipped-4.5.7-light/css/tipped/tipped.css">
+  <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="bootstrap-3.3.6-dist/css/bootstrap.css">
 
   <!--[if lt IE 9]>
@@ -15,7 +18,7 @@
 
 <!-- I'll show you a body ;) -->
 <body>
-<div id='majorPercent'></div>
+<!-- <div id='majorPercent'></div>
 	<div id="otherstuff" class="col-md-6"></div>
    
    <div class="col-md-6">
@@ -34,43 +37,92 @@
   <svg id="nodearea">
   </svg>
   </div> 
-  </div>
-
-
-  <div id = "left-side-bar" class="col-md-4">
-    <div class="row"><div class="col-md-12"><h1>Some shet</h1></div></div>
-    <div class="row"><div class="col-md-12">
-    <button  class="filterall" name="all">All
-    <button  class="filterger" name="ger">GER
-    <button  class="filtermaj" name="maj">Major
-    <button  class="filteroth" name="oth">Other
-
-    </div></div>
-    <div id="chart" class="col-md-6"></div>
+  </div> -->
    <!--  <div class="container-bar">
       <span>Episodes</span>
       <span class="info"></span>
     </div> -->
-  </div>
-  <div id="CRNC">
-  <div id="container1">
-     <svg viewBox="0 0 133.6 20" id="labels1" preserveAspectRatio="none" style="display: block; width: 100%;">
-    <line x1="22.222" y1="3" x2="22.222" y2="6" stroke="LightGrey" stroke-width="0.5"></line>
-    <text x="19.7" y="9.5" fill="blue" font-size="3.5"><tspan id="actunits">0/8</tspan><tspan font-size="2.5" x="13" y="12.5">Activity Units Used</tspan></text>
-    <line x1="100" y1="3" x2="100" y2="6" stroke="LightGrey" stroke-width="0.5"></line>
-    <text x="96" y="9.5" fill="orange" font-size="3.5"><tspan id="creditunits">00/36</tspan><tspan font-size="2.5" x="90.5" y="12.5">Credit Units Used</tspan></text>
+  <!-- </div> -->
+  <!-- <div class= -->
+  <div class="row offsetthis"><div class="col-md-10" id="title">
+      <h1>Degree Progress</h1>
+  </div></div>
+
+  <div class='row'>
+    <div id = "left-side-bar" class="col-md-5 offsetthis">
+      <!-- <div class="row"><div class="col-md-12">
+        <h1>Degree Progress</h1>
+      </div></div> -->
+      <div class="row"><div class="col-md-12">
+        <!-- <button  class="filterall" name="all">All
+        <button  class="filterger" name="ger">GER
+        <button  class="filtermaj" name="maj">Major
+        <button  class="filteroth" name="oth">Other -->
+          <!-- <label class="checkbox-inline">
+            <input id="toggleAll" type="checkbox" data-size="small" checked data-toggle="toggle"> All
+          </label> -->
+          <label class="checkbox-inline">
+            <input id="toggleGER" type="checkbox" data-size="small" checked data-toggle="toggle" data-onstyle="primary"> GER
+          </label>
+          <label class="checkbox-inline">
+            <input id="toggleMajor" type="checkbox" data-size="small" checked data-toggle="toggle" data-onstyle="warning"> Major
+          </label>
+          <label class="checkbox-inline">
+            <input id="toggleOther" type="checkbox" data-size="small" checked data-toggle="toggle" data-onstyle="success"> Other
+          </label>
+      </div></div>
+      <div class='row'><div id="chart" class="col-md-6">
+      </div></div>
+      <div class="row">
+        <div class="col-md-2"><div class='row'>
+          <div id='majorPercent'></div>
+          <div class="help-tip locate-tip">
+            <p>This is the percent of classes you have left to take that are within the major! A higher percent means that you need to take a higher percent of classes in your major in the future.</p>
+          </div>
+        </div></div>
+        <div class="col-md-10" id="crbar"><div class="row">
+          <div id="CRNC">
+            <div id="container1">
+              <svg viewBox="0 0 133.6 20" id="labels1" preserveAspectRatio="none" style="display: block; width: 100%;">
+              <line x1="22.222" y1="3" x2="22.222" y2="6" stroke="LightGrey" stroke-width="0.5"></line>
+              <text x="19.7" y="9.5" fill="blue" font-size="3.5"><tspan id="actunits">0/8</tspan><tspan font-size="2.5" x="13" y="12.5">Activity Units Used</tspan></text>
+              <line x1="100" y1="3" x2="100" y2="6" stroke="LightGrey" stroke-width="0.5"></line>
+              <text x="96" y="9.5" fill="orange" font-size="3.5"><tspan id="creditunits">00/36</tspan><tspan font-size="2.5" x="90.5" y="12.5">Credit Units Used</tspan></text>
+              </svg>
+            </div>
+            <div id='container2'></div>
+          </div>
+        </div></div>
+      </div>
+    </div> <!-- end col md-6 -->
+
+    <div class="col-md-3" id='rightside'>
+      <table id="classList" class="table">
+       <caption>Still Need To Take</caption>
+       <thead>
+          <tr>
+             <th>
+               Requirements Type
+             </th>
+          </tr>
+       </thead>
+       <tbody>
+       </tbody>
+    </table>
+    <svg id="nodearea">
     </svg>
+    </div> 
+    </div>
+    <!-- <div id="TEST"></div> -->
+   <!--    <svg viewBox="0 0 100 20" id="labels1" preserveAspectRatio="none" style="display: block; width: 100%;">
+      <line x1="22.222" y1="3" x2="19.222" y2="6" stroke="LightGrey" stroke-width="0.5"></line>
+      <text x="20.5" y="9" fill="blue" font-size="2.5">3/8<tspan x="13" y="11.5">Activity Units Used</tspan></text>
+      <line x1="100" y1="3" x2="100" y2="6" stroke="LightGrey" stroke-width="1"></line>
+      <text x="98.5" y="9" fill="blue" font-size="2.5">12/36<tspan x="100" y="11">Credit Units Used</tspan></text>
+      </svg> -->
+    </div>
   </div>
-  <div id='container'>
-  </div>
-  <div id="TEST"></div>
- <!--    <svg viewBox="0 0 100 20" id="labels1" preserveAspectRatio="none" style="display: block; width: 100%;">
-    <line x1="22.222" y1="3" x2="19.222" y2="6" stroke="LightGrey" stroke-width="0.5"></line>
-    <text x="20.5" y="9" fill="blue" font-size="2.5">3/8<tspan x="13" y="11.5">Activity Units Used</tspan></text>
-    <line x1="100" y1="3" x2="100" y2="6" stroke="LightGrey" stroke-width="1"></line>
-    <text x="98.5" y="9" fill="blue" font-size="2.5">12/36<tspan x="100" y="11">Credit Units Used</tspan></text>
-    </svg> -->
-  </div>
+  <!-- </div> -->
   
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
@@ -80,6 +132,7 @@
    <script src="cs_unspecialized.json"></script>
    <script src="progressbar.min.js"></script>
   <script src="tipped-4.5.7-light/js/tipped/tipped.js"></script>
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
   <!-- <script src="color.js"></script> -->
   <script src="tinyColor.js"></script>
   <script src="grapher.js"></script>
