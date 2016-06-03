@@ -107,10 +107,7 @@ d3.json("courses.json", function(error, json) {
 	  			.attr("transform", "rotate(270)");
 
 	  	// Dotted line goal
-	  	graph.append("line")
-	  		.attr("class", "goalline")
-	  		.style("stroke-dasharray", ("3, 3"))
-	  		.attr({x1:x(1),y1:y(180),x2:x(12),y2:y(180)});
+	  	
 
 	    var color = d3.scale.category20().domain(["ger","major", "other"]);
 	    
@@ -147,8 +144,16 @@ d3.json("courses.json", function(error, json) {
 	    	}
 	    	if(arrays.length === 3) {
 	    		drawTotalProjection([gerdata,majordata,otherdata]);
+	    		graph.append("line")
+			  		.attr("class", "goalline removable")
+			  		.style("stroke-dasharray", ("3, 3"))
+	  				.attr({x1:x(1),y1:y(180),x2:x(12),y2:y(180)});
 	    	} else if(majShown && !gerShown && !othShown) {
 	    		drawTotalProjection([majordata]);
+	    		graph.append("line")
+			  		.attr("class", "goalline removable")
+			  		.style("stroke-dasharray", ("3, 3"))
+	  				.attr({x1:x(1),y1:y(110),x2:x(12),y2:y(110)});
 	    	}
 
 	    	$('.area')
