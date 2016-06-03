@@ -293,43 +293,86 @@ d3.json("courses.json", function(error, json) {
 		});
 
 		//classList
-		function checkFulf(requirement, remClasses) {
-			var courses = requirement.classes;
-			var unitsRem = requirement.units;
-			var unfulfilled = []
-			for(var i=0; i < courses.length; i++) {
-				var course = courses[i];
-				if(course.type === "class") {
-					if (hasTakenCourse(course,remClasses)) {
-						var unitsCompleted = removeCourse(course, remClasses);
-						unitsRem -= unitsCompleted;
-					} else {
-						unfulfilled.push(course);
-					}
-				} else if(course.type === "or") {
-					var innerRes = checkFulf(course, remClasses);
-					var inUnitsRem = innerRes[0];
-					var inUnitsRem = innerRes[0];
-					
-				} else if(course.type === "elective"){
+		console.log(cujson); // class,or,all,elective,ap
+		
 
-				}
-			}
-			return [unitsRem, unfulfilled];
+		function addRowHover(className, remUnits, unfulfilled) {
+			d3.select("#classList > tbody > ."+className).append("td").html(remUnits)
+			.on('mouseover', function() {
+				console.log(unfulfilled);
+			});
 		}
 
+		var remClasses = takenList.slice();
+		var electives = cujson["Elective Classes"];
+
+		function checkFulf(requirement, remClasses, fulfillType, remUnits) {
+			switch(fulfillType) {
+				case "all":
+					if(requirement.units) { //top level
+						remUnits[0] = requirement.units;
+					}
+					var courses = requirement.classes;
+					var unfulfilled = [];
+					for(var i = 0; i < courses.length;i++) {
+						var innerUnfulf = checkFulf(courses[i], remClasses, courses[i].type,remUnits);
+						if(innerUnfulf.length > 0) {
+							unfulfilled.push(innerUnfulf);
+						}
+					}
+					return unfulfilled;
+				case "or":
+					var courses = requirement.classes;
+					var unfulfilled = [];
+					for(var i = 0; i < courses.length;i++) {
+						var innerUnfulf = checkFulf(courses[i], remClasses, courses[i].type,remUnits);
+						if(innerUnfulf.length > 0) {
+							unfulfilled.push(innerUnfulf);
+						} else {
+							return [];
+						}
+					}
+					return unfulfilled;
+				case "class":
+					for(var i=0; i<remClasses.length; i++) {
+						if (remClasses[i][0] === requirement.number) {
+							remUnits[0] -= remClasses[i][2];
+							remClasses.splice(i,1);
+							return [];							
+						}
+					}
+					return [requirement];
+				case "elective":
+					var name = requirement.electives;
+					for(var i=0; i<remClasses.length; i++) {
+						for(var j=0; j < electives[name].length; j++) {
+							if(remClasses[i][0] === electives[name][j]) {
+							remUnits[0] -= remClasses[i][2];
+							remClasses.splice(i,1);
+							return [];
+							}
+						}
+					}
+					return [requirement];
+				case "AP":
+					return [];
+			}
+		}
 		for(var req in cujson.Requirements) {
-			var info = checkFulf(cujson.Requirements[req], takenList.split());
-			var remUnits = info[0];
-			var fulfOptions = info[1];
-			if (remUnits > 0) {
+			var remUnits = [0];
+			var unfulfilled = checkFulf(cujson.Requirements[req], remClasses, "all", remUnits);
+			req = req.replace(/\s/g, '\_');
+			if (remUnits[0] > 0) {
 				d3.select('#classList > tbody')
 				.append("tr")
-				.attr("class", req + "reqRow")
+				.attr("class", req)
 				.append("td")
-				.html(req);
-				addRowHover(req + "reqRow", remUnits, fulfOptions);
+				.html(req.replace(/\_/, ' '));
+				addRowHover(req, remUnits[0], unfulfilled);
 			}
 		}
+
+
+
 	});
 });
