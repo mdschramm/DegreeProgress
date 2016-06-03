@@ -363,7 +363,7 @@
 			]
 		},
 		"Senior Project" : {
-			"units": 0,
+			"units": 5,
 			"classes": [
 				{
 					"type": "or",
