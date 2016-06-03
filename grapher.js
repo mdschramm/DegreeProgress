@@ -107,7 +107,71 @@ d3.json("courses.json", function(error, json) {
 	  			.attr("transform", "rotate(270)");
 
 	  	// Dotted line goal
-	  	
+	  	var goallineColor = function(unitsLeft, totalUnits) {
+			// color picker for pace line
+			var colors = ["#6EFF00", "#C4FF00", "#FFEB00", "#FF8900", "#FF1000"];
+			var numQuarters = json.length;
+			var numUnitsTaken = 0;
+			var countUnits = function() {
+				for (var i = 0; i < numQuarters; i++) {
+					var curQuarter = json[i]; //units
+					for (var j = 0; j < curQuarter.length; j++) {
+						var units = curQuarter[j][2];
+						numUnitsTaken += units;
+					}
+				}
+			}
+			countUnits();
+			if (unitsLeft == undefined) {
+				unitsLeft = 180 - numUnitsTaken;
+			}
+
+			if (totalUnits == undefined) {
+				totalUnits = 180;
+			}
+			var quartersLeft = 12 - numQuarters;
+			var paceLeft = unitsLeft/quartersLeft;
+			var pickColor = function() {
+				var pickedColor = null;
+				console.log(paceLeft);
+				if (unitsLeft == undefined) {
+					if (paceLeft <= 14) {
+						pickedColor = colors[0];
+						console.log(pickedColor);
+					} else if (paceLeft <= 15) {
+						pickedColor = colors[1];
+					} else if (paceLeft <= 16) {
+						pickedColor = colors[2];
+					} else if (paceLeft <= 17) {
+						pickedColor = colors[3];
+					} else { //greater than 17, in trouble!
+						pickedColor = colors[4];
+					}
+				} else { //for major
+					if (paceLeft <= 5) {
+						pickedColor = colors[0];
+						console.log(pickedColor);
+					} else if (paceLeft <= 6.5) {
+						pickedColor = colors[1];
+					} else if (paceLeft <= 8.4) {
+						pickedColor = colors[2];
+					} else if (paceLeft <= 10) {
+						pickedColor = colors[3];
+					} else { //greater than 17, in trouble!
+						pickedColor = colors[4];
+					}
+				}
+				//now we have color, pick saturation
+				// quartersLeft = 9;
+				var sat = ((quartersLeft/12)-0.08333)*100;
+				var colorObj = tinycolor(pickedColor);
+				var finalColor = colorObj.desaturate(sat).toString();
+				// $("#TEST").css('background-color', finalColor);
+				return finalColor;
+
+			}
+			return pickColor();
+		};
 
 	    var color = d3.scale.category20().domain(["ger","major", "other"]);
 	    
@@ -216,13 +280,40 @@ d3.json("courses.json", function(error, json) {
 
 
 	    function drawTotalProjection(arrays) {
+	    	var len = arrays.length; //if 1, then major, else everything
 	    	var endy = addIndex(arrays,gerdata.length - 1);
 	    	var endx = gerdata.length;
 	    	var slope =  (endy - 
 	    	addIndex(arrays,0)) / (endx - 1);
+	    	var rightColor = null;
+	    	if (len == 1) { //units left\
+	    		console.log("HDKASHDKAHSDFK");
+	    		var totalUnits = 100;
+	    		var majorUnits = 0;
+	    		for (var i = 0; i < json.length; i++) {
+	    			var curQuarter = json[i];
+	    			for (var j = 0; j < curQuarter.length; j++) {
+	    				var curClass = curQuarter[j];
+	    				// ["CS 106A", "major", 5,3.7]
+	    				if (curClass[1] == "major") {
+	    					majorUnits += curClass[2];
+	    				}
+	    			}
+	    		}
+	    		console.log(majorUnits);
+	    		var unitsLeft = 100 - majorUnits;
+	    		var quartersLeft = 12 - json.length;
+	    		// var pace = unitsLeft/quartersLeft;
+	    		// console.log("PACE");
+	    		// console.log(pace);
+	    		rightColor = goallineColor(unitsLeft, totalUnits);
+	    	}
+	    	else rightColor = goallineColor();
 	    	graph.append("line")
 	  		.attr("class", "projline removable")
 	  		.style("stroke-dasharray", ("2, 2"))
+	  		.style("stroke", rightColor)
+	  		.style("stroke-width", 1.5)
 	  		.attr({x1:x(endx),
 	  			y1:y(endy),
 	  			x2:x(12),
@@ -296,6 +387,7 @@ d3.json("courses.json", function(error, json) {
 	  	if (creditUnits < 10) {
 	  		creditUnits = "0"+creditUnits;
 	  	}
+	  	creditUnits =16;
 	  	$("#actunits").text(""+activityUnits+"/8");
 	  	$("#creditunits").text(""+creditUnits+"/36");
 	  	var percentCredit = creditUnits/36;
@@ -336,7 +428,7 @@ d3.json("courses.json", function(error, json) {
 		});
 
 		// Now let's do the major %/total left meter
-		var percent = 0.75;
+		var percent = 0.83;
 		var bar = new ProgressBar.Circle("#majorPercent", {
 		  color: '#aaa',
 		  // This has to be the same size as the maximum width to
@@ -385,30 +477,99 @@ d3.json("courses.json", function(error, json) {
 
 		function drawNodes(unfulfilled) {
 			var nodesets = [];
+			var edgesets = [];
 			var flattened = flatten(unfulfilled);
 			for (var i = 0; i < flattened.length; i++) {
 				var course = flattened[i];
 				if(course.type === "class") {
-					var toTake = [course];
+					var toTake = [course.number];
 					var taken = [];
 					var edges = [];
 					var prs = prereq(course.number);
 					makeClassList(toTake,taken, prs, edges, null);
-					var nodes = makeNodes(nodes, toTake, edges, taken);
-					var graphEdges = makeEdges(nodes, edges);
+					nodesets.push(toTake.concat(taken));
+					edgesets.push(edges);
 				} else if(course.type === "elective") {
-
+					console.log("SHIT!");
 				}
-				
-
+			};
+			//figure out how to pick
+			for (var i = 0; i < nodesets.length; i++) {
+				var nodes = nodesets[i];
+				var uniqueNodes = [];
+				$.each(nodes, function(i, el){
+				    if($.inArray(el, uniqueNodes) === -1) uniqueNodes.push(el);
+				});
+				var edges = edgesets[i];
+				makeNodesAndLinks(uniqueNodes, edges);
+				break;
 			};
 		}
 
-		function makeNodes(nodes, toTake, edges, taken) {
+		function makeNodesAndLinks(nodes, edges) {
+			var nodeMap = {};
+			for (var i = 0; i < nodes.length; i++) {
+				nodeMap[nodes[i]] = i;
+			};
+			var links = [];
+			for (var i = 0; i < edges.length; i++) {
+				var src = nodeMap[edges[i][1]];
+				var dest = nodeMap[edges[i][0]];
+				console.log(edges[i], nodeMap);
+				console.log(src, dest);
+				if(src && dest){
+					links.push({"source":src,"target":dest});
+				}
+			};
 
-		}
+			console.log(nodes,edges,links);
 
-		function makeEdges(nodes, edges) {
+			var w = 500;
+			var h = 250;
+			var force = d3.layout.force()
+				.charge(-120)
+			    .linkDistance(30)
+			    .size([w, h]);
+
+			var gsvg = d3.select("#nodearea").append("svg")
+				    .attr("width", w)
+				    .attr("height", h);
+
+			force
+				.nodes(nodes)
+				.links(links)
+				.start();
+
+			var link = gsvg.selectAll('.link')
+			    .data(links)
+			    .enter().append('line')
+			    .attr('class', 'link')
+			    .style("stroke-width",1);
+
+			// Now it's the nodes turn. Each node is drawn as a circle.
+
+			var node = gsvg.selectAll('.node')
+			    .data(nodes)
+			    .enter().append('circle')
+			    .attr('class', 'node')
+			    .attr("r", 20)
+			    .attr("fill", "none")
+			    .attr("stroke", "black")
+			    .call(force.drag);
+			
+			node.append("title")
+			.text(function(d) {return d;});
+
+			force.on("tick", function() {
+			    link.attr("x1", function(d) { console.log(d.source.x);return d.source.x; })
+			        .attr("y1", function(d) { return d.source.y; })
+			        .attr("x2", function(d) { return d.target.x; })
+			        .attr("y2", function(d) { return d.target.y; });
+
+			    node.attr("cx", function(d) { return d.x; })
+			        .attr("cy", function(d) { return d.y; });
+  			});
+
 			
 		}
 
@@ -575,7 +736,6 @@ d3.json("courses.json", function(error, json) {
 			return tree;
 			// return at end
 		};
-
 		// color picker for pace line
 		var colors = ["#6EFF00", "#C4FF00", "#FFEB00", "#FF8900", "#FF1000"];
 		// var colors = ["rgb(110, 255, 0)", "rgb(196, 255, 0)", "rgb(255, 235, 0)", "rgb(255, 137, 0)", "rgb(255, 16, 0)"];
