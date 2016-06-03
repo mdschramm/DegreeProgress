@@ -3,6 +3,7 @@
 // Draw stacked line chart
 d3.json("courses.json", function(error, json) {
 	d3.json("cs_unspecialized.json", function(cuerror, cujson) {
+	d3.json("prereqs.json", function(preerror, prejson) {
 		if (error) return console.warn(error);
 		//process data
 		var gerdata = [0,0,0,0,0,0];
@@ -153,22 +154,46 @@ d3.json("courses.json", function(error, json) {
 	    	if(arrays.length === 3) {
 	    		drawTotalProjection();
 	    	}
-	    	// Hover areas
-		  	var tip = d3.tip()
-			  .attr('class', 'd3-tip')
-			  .direction('e')
-			  .style('z-index', 100)
-			  .offset([-10, 0])
-			  .html(function(d) {
-			    return "<div style='z-index:10'><span style='color:red'>" + verbose[d] + " GPA: " + avgs[d] + "</span></div>";
-			  });
+	    	//Hover areas
+		 //  	var tip = d3.tip()
+			//   .attr('class', 'd3-tip')
+			//   .direction('e')
+			//   .style('z-index', 100)
+			//   .offset([-5, 0])
+			//   .html(function(d) {
+			//     return "<div style='z-index:10'><span style='color:white'>" + verbose[d] + " GPA: " + avgs[d] + "</span></div>";
+			//   });
 
-			graph.call(tip);
+			// graph.call(tip);
 
-			svg.selectAll(".area")
-			.data(names)
-			.on('mouseover', tip.show)
-			.on('mouseout', tip.hide);
+			// svg.selectAll(".area")
+			// .data(names)
+			// .on('mouseover', tip.show)
+			// .on('mouseout', tip.hide);
+			
+			/**** SAVE DO AFTER POSTER!!! ***/
+			// var majText = "Major GPA: " + avgs.maj;
+			// // console.log(avgs);
+			// Tipped.create('.maj', majText, {
+			// 	position: 'right',
+			// 	title: "Major Requirments",
+			// 	size: "large",
+			// 	skin: 'light',
+			// 	onShow: function(content, element) {
+			// 		// $(element).addClass('highlight');
+			// 		var toptip = $(content).parent().parent().parent().parent().parent();
+			// 		console.log(toptip[0]);
+			// 		var pixels = json.length * 30;//quarter * certain amount of pixels
+			// 		toptip.css('left', ""+pixels+"px");
+			// 		toptip.css('position', 'relative');
+			// 	},
+			// 	afterHide: function(content, element) {
+			// 		// $(element).removeClass('highlight');
+			// 	}
+			// });
+			// console.log($(".tpd-tooltip")[0]);
+			// $(".tpd-tooltip").css('left', "1000px");
+			// Tipped.create('.ger', 'gerdata');
 	    }	
 
 
@@ -292,6 +317,40 @@ d3.json("courses.json", function(error, json) {
 			}
 		});
 
+		// Now let's do the major %/total left meter
+		var percent = 0.75;
+		var bar = new ProgressBar.Circle("#majorPercent", {
+		  color: '#aaa',
+		  // This has to be the same size as the maximum width to
+		  // prevent clipping
+		  strokeWidth: 6,
+		  trailWidth: 2,
+		  easing: 'easeInOut',
+		  duration: 1300,
+		  text: {
+		    autoStyleContainer: false
+		  },
+		  from: { color: '#FFEA82', width: 1 },
+		  to: { color: '#ED6A5A', width: 4 },
+		  // Set default step function for all animate calls
+		  step: function(state, circle) {
+		    circle.path.setAttribute('stroke', state.color);
+		    circle.path.setAttribute('stroke-width', state.width);
+
+		    var value = Math.round(circle.value() * 100);
+		    if (value === 0) {
+		      circle.setText('');
+		    } else {
+		      circle.setText(value+"%");
+		    }
+
+		  }
+		});
+		bar.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
+		bar.text.style.fontSize = '6rem';
+
+		bar.animate(percent);
+
 		//classList
 		console.log(cujson); // class,or,all,elective,ap
 		
@@ -372,7 +431,72 @@ d3.json("courses.json", function(error, json) {
 			}
 		}
 
+		var hasTaken = function(curClass) {
+			for (var i = 0; i < takenList.length; i++) {
+				var cur = takenList[i][0]; //gets name
+				if (curClass == cur) return true;
+			}
+			return false;
+		}
 
+		var specialOrs = {
+			"CS 106B": "CS 106X",
+			"CS 106X": "CS 106B"
+		};
+		var tree = [];
+		// takenList is available
+		var prereqRec = function(curClass) {
+			// class is the name of the class
+			var tree = {};
+			var result = $.grep(prejson, function(e){
+				return e.code == curClass;
+			});
+			// console.log(result[0].code);
+			var prereqArr = result[0].prereq;
+			if (prereqArr.length == 0) return "end";
+			// has array of classes for prereqs
+			var innerTree = {};
+			var sameSet = {};
+			for (var i = 0; i < prereqArr.length; i++) {
+				var cur = prereqArr[i];
+				//part of taken list
+				if (hasTaken(cur)) {
+					sameSet[cur] = true;
+					innerTree[cur] = "taken";
+					continue;
+				}
+				var special = specialOrs[cur];
+				if (special != undefined && sameSet[special]) { // copy already in here
+					// remove and combine
+					console.log(special);
+					var otherTree = innerTree[special];
+					console.log(otherTree);
+					delete innerTree[special];
+					var newName = special + " or " + cur;
+					innerTree[newName] = otherTree;
+					sameSet[cur] = true;
+					continue;
+				}
+				sameSet[cur] = true;
+				var prereqTree = prereqRec(cur); // for this specific class
+				innerTree[cur] = prereqTree;
+			}
+			return innerTree;
+			//can check for ors here and make note of it
+			//takenList
+		};
 
+		// console.log(takenList);
+
+		var prereq = function(curClass) {
+			var tree = {};
+			var nodes = prereqRec(curClass);
+			// console.log(nodes);
+			tree[curClass] = nodes;
+			return tree;
+			// return at end
+		};
+
+	});
 	});
 });

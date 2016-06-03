@@ -65,9 +65,9 @@ image {
   /*float: left;*/
 }
 #container1 {
-  position: absolute;
+  position: relative;
   left: 20px;
-  top: 20px;
+  top: 110px;
   width: 800px;
   height: 90px;
 }
@@ -87,4 +87,11 @@ image {
     width: 100%;
     display: block;
     position: absolute;
+}
+
+#majorPercent {
+  margin: 20px;
+  width: 200px;
+  height: 200px;
+  position: relative;
 }
