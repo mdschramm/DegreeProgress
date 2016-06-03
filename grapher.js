@@ -3,9 +3,9 @@
 // Draw stacked line chart
 d3.json("courses.json", function(error, json) {
 	d3.json("cs_unspecialized.json", function(cuerror, cujson) {
+	d3.json("prereqs.json", function(preerror, prejson) {
 		if (error) return console.warn(error);
 		//process data
-		console.log(cujson);
 		var gerdata = [0,0,0,0,0,0];
 		var majordata= [0,0,0,0,0,0];
 		var otherdata = [0,0,0,0,0,0];
@@ -14,13 +14,14 @@ d3.json("courses.json", function(error, json) {
 		var majoravg = [0,0];
 		var otheravg = [0,0];
 
-
+		var takenList = [];
 		for(var quarter=0; quarter < json.length; quarter++){
 			var ger = 0;
 			var maj = 0;
 			var oth = 0;
 			for(var course=0; course< json[quarter].length; course++) {
 				var info = json[quarter][course];
+				takenList.push(info);
 				var fulf = info[1];
 				var units = info[2];
 				var grade = info[3];
@@ -350,5 +351,120 @@ d3.json("courses.json", function(error, json) {
 
 		bar.animate(percent);
 
+		//classList
+		// function checkFulf(requirement, remClasses) {
+		// 	var courses = requirement.classes;
+		// 	var unitsRem = requirement.units;
+		// 	var unfulfilled = []
+		// 	for(var i=0; i < courses.length; i++) {
+		// 		var course = courses[i];
+		// 		if(course.type === "class") {
+		// 			if (hasTakenCourse(course,remClasses)) {
+		// 				var unitsCompleted = removeCourse(course, remClasses);
+		// 				unitsRem -= unitsCompleted;
+		// 			} else {
+		// 				unfulfilled.push(course);
+		// 			}
+		// 		} else if(course.type === "or") {
+		// 			var innerRes = checkFulf(course, remClasses);
+		// 			var inUnitsRem = innerRes[0];
+		// 			var inUnitsRem = innerRes[0];
+					
+		// 		} else if(course.type === "elective"){
+
+		// 		}
+		// 	}
+		// 	return [unitsRem, unfulfilled];
+		// }
+
+		// for(var req in cujson.Requirements) {
+		// 	console.log(typeof takenList);
+		// 	console.log(takenList);
+		// 	var info = checkFulf(cujson.Requirements[req], takenList.slice());
+		// 	var remUnits = info[0];
+		// 	var fulfOptions = info[1];
+		// 	if (remUnits > 0) {
+		// 		d3.select('#classList > tbody')
+		// 		.append("tr")
+		// 		.attr("class", req + "reqRow")
+		// 		.append("td")
+		// 		.html(req);
+		// 		addRowHover(req + "reqRow", remUnits, fulfOptions);
+		// 	}
+		// }
+
+		var hasTaken = function(curClass) {
+			for (var i = 0; i < takenList.length; i++) {
+				var cur = takenList[i][0]; //gets name
+				if (curClass == cur) return true;
+			}
+			return false;
+		}
+
+		var specialOrs = {
+			"CS 106B": "CS 106X",
+			"CS 106X": "CS 106B"
+		};
+		var tree = [];
+		// takenList is available
+		var prereqRec = function(curClass) {
+			// class is the name of the class
+			var tree = {};
+			var result = $.grep(prejson, function(e){
+				return e.code == curClass;
+			});
+			// console.log(result[0].code);
+			var prereqArr = result[0].prereq;
+			if (prereqArr.length == 0) return "end";
+			// has array of classes for prereqs
+			var innerTree = {};
+			var sameSet = {};
+			for (var i = 0; i < prereqArr.length; i++) {
+				var cur = prereqArr[i];
+				//part of taken list
+				if (hasTaken(cur)) {
+					sameSet[cur] = true;
+					innerTree[cur] = "taken";
+					continue;
+				}
+				var special = specialOrs[cur];
+				if (special != undefined && sameSet[special]) { // copy already in here
+					// remove and combine
+					console.log(special);
+					var otherTree = innerTree[special];
+					console.log(otherTree);
+					delete innerTree[special];
+					var newName = special + " or " + cur;
+					innerTree[newName] = otherTree;
+					sameSet[cur] = true;
+					continue;
+				}
+				sameSet[cur] = true;
+				var prereqTree = prereqRec(cur); // for this specific class
+				innerTree[cur] = prereqTree;
+			}
+			return innerTree;
+			//can check for ors here and make note of it
+			//takenList
+		};
+
+		// console.log(takenList);
+
+		var prereq = function(curClass) {
+			var tree = {};
+			var nodes = prereqRec(curClass);
+			// console.log(nodes);
+			tree[curClass] = nodes;
+			return tree;
+			// return at end
+		}
+
+		var result = prereq("LINGUIST 222B");
+		console.log(result);
+		var result = prereq("CS 155");
+		console.log(result);
+		var result = prereq("CS 140");
+		console.log(result);
+	});
 	});
 });

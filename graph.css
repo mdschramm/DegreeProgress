@@ -12,7 +12,9 @@ body {
 }
 
 
-
+#otherstuff {
+  margin-top:10%;
+}
 
 image {
 	pointer-events: none;
