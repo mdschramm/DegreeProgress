@@ -516,6 +516,9 @@ d3.json("courses.json", function(error, json) {
 			// return at end
 		};
 
+		// color picker for pace line
+		var colors = ["6EFF00", "C4FF00", "FFEB00", "FF8900", "FF1000"];
+
 	});
 	});
 });
