@@ -23,7 +23,7 @@ var Color = function (obj) {
 	// parse Color() argument
 	var vals;
 	if (typeof obj === 'string') {
-		vals = string.getRgba(obj);
+		vals = string.getRgba(obj); //error
 		if (vals) {
 			this.setValues('rgb', vals);
 		} else if (vals = string.getHsla(obj)) {
