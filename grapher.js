@@ -146,7 +146,9 @@ d3.json("courses.json", function(error, json) {
 	    		y0arrs.push(arrays[i]);
 	    	}
 	    	if(arrays.length === 3) {
-	    		drawTotalProjection();
+	    		drawTotalProjection([gerdata,majordata,otherdata]);
+	    	} else if(majShown && !gerShown && !othShown) {
+	    		drawTotalProjection([majordata]);
 	    	}
 
 	    	$('.area')
@@ -208,11 +210,11 @@ d3.json("courses.json", function(error, json) {
 	    }	
 
 
-	    function drawTotalProjection() {
-	    	var endy = addIndex([gerdata,majordata,otherdata],gerdata.length - 1);
+	    function drawTotalProjection(arrays) {
+	    	var endy = addIndex(arrays,gerdata.length - 1);
 	    	var endx = gerdata.length;
 	    	var slope =  (endy - 
-	    	addIndex([gerdata,majordata,otherdata],0)) / (endx - 1);
+	    	addIndex(arrays,0)) / (endx - 1);
 	    	graph.append("line")
 	  		.attr("class", "projline removable")
 	  		.style("stroke-dasharray", ("2, 2"))
