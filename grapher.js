@@ -107,7 +107,7 @@ d3.json("courses.json", function(error, json) {
 	  			.attr("transform", "rotate(270)");
 
 	  	// Dotted line goal
-	  	var goallineColor = function() {
+	  	var goallineColor = function(unitsLeft, totalUnits) {
 			// color picker for pace line
 			var colors = ["#6EFF00", "#C4FF00", "#FFEB00", "#FF8900", "#FF1000"];
 			var numQuarters = json.length;
@@ -122,23 +122,44 @@ d3.json("courses.json", function(error, json) {
 				}
 			}
 			countUnits();
-			var unitsLeft = 180 - numUnitsTaken;
+			if (unitsLeft == undefined) {
+				unitsLeft = 180 - numUnitsTaken;
+			}
+
+			if (totalUnits == undefined) {
+				totalUnits = 180;
+			}
 			var quartersLeft = 12 - numQuarters;
 			var paceLeft = unitsLeft/quartersLeft;
 			var pickColor = function() {
 				var pickedColor = null;
 				console.log(paceLeft);
-				if (paceLeft <= 14) {
-					pickedColor = colors[0];
-					console.log(pickedColor);
-				} else if (paceLeft <= 15) {
-					pickedColor = colors[1];
-				} else if (paceLeft <= 16) {
-					pickedColor = colors[2];
-				} else if (paceLeft <= 17) {
-					pickedColor = colors[3];
-				} else { //greater than 17, in trouble!
-					pickedColor = colors[4];
+				if (unitsLeft == undefined) {
+					if (paceLeft <= 14) {
+						pickedColor = colors[0];
+						console.log(pickedColor);
+					} else if (paceLeft <= 15) {
+						pickedColor = colors[1];
+					} else if (paceLeft <= 16) {
+						pickedColor = colors[2];
+					} else if (paceLeft <= 17) {
+						pickedColor = colors[3];
+					} else { //greater than 17, in trouble!
+						pickedColor = colors[4];
+					}
+				} else { //for major
+					if (paceLeft <= 5) {
+						pickedColor = colors[0];
+						console.log(pickedColor);
+					} else if (paceLeft <= 6.5) {
+						pickedColor = colors[1];
+					} else if (paceLeft <= 8.4) {
+						pickedColor = colors[2];
+					} else if (paceLeft <= 10) {
+						pickedColor = colors[3];
+					} else { //greater than 17, in trouble!
+						pickedColor = colors[4];
+					}
 				}
 				//now we have color, pick saturation
 				// quartersLeft = 9;
@@ -151,11 +172,6 @@ d3.json("courses.json", function(error, json) {
 			}
 			return pickColor();
 		};
-
-	  	graph.append("line")
-	  		.attr("class", "goalline")
-	  		.style("stroke-dasharray", ("3, 3"))
-	  		.attr({x1:x(1),y1:y(180),x2:x(12),y2:y(180)});
 
 	    var color = d3.scale.category20().domain(["ger","major", "other"]);
 	    
@@ -192,8 +208,16 @@ d3.json("courses.json", function(error, json) {
 	    	}
 	    	if(arrays.length === 3) {
 	    		drawTotalProjection([gerdata,majordata,otherdata]);
+	    		graph.append("line")
+			  		.attr("class", "goalline removable")
+			  		.style("stroke-dasharray", ("3, 3"))
+	  				.attr({x1:x(1),y1:y(180),x2:x(12),y2:y(180)});
 	    	} else if(majShown && !gerShown && !othShown) {
 	    		drawTotalProjection([majordata]);
+	    		graph.append("line")
+			  		.attr("class", "goalline removable")
+			  		.style("stroke-dasharray", ("3, 3"))
+	  				.attr({x1:x(1),y1:y(110),x2:x(12),y2:y(110)});
 	    	}
 
 	    	$('.area')
@@ -256,14 +280,39 @@ d3.json("courses.json", function(error, json) {
 
 
 	    function drawTotalProjection(arrays) {
+	    	var len = arrays.length; //if 1, then major, else everything
 	    	var endy = addIndex(arrays,gerdata.length - 1);
 	    	var endx = gerdata.length;
 	    	var slope =  (endy - 
 	    	addIndex(arrays,0)) / (endx - 1);
+	    	var rightColor = null;
+	    	if (len == 1) { //units left\
+	    		console.log("HDKASHDKAHSDFK");
+	    		var totalUnits = 100;
+	    		var majorUnits = 0;
+	    		for (var i = 0; i < json.length; i++) {
+	    			var curQuarter = json[i];
+	    			for (var j = 0; j < curQuarter.length; j++) {
+	    				var curClass = curQuarter[j];
+	    				// ["CS 106A", "major", 5,3.7]
+	    				if (curClass[1] == "major") {
+	    					majorUnits += curClass[2];
+	    				}
+	    			}
+	    		}
+	    		console.log(majorUnits);
+	    		var unitsLeft = 100 - majorUnits;
+	    		var quartersLeft = 12 - json.length;
+	    		// var pace = unitsLeft/quartersLeft;
+	    		// console.log("PACE");
+	    		// console.log(pace);
+	    		rightColor = goallineColor(unitsLeft, totalUnits);
+	    	}
+	    	else rightColor = goallineColor();
 	    	graph.append("line")
 	  		.attr("class", "projline removable")
 	  		.style("stroke-dasharray", ("2, 2"))
-	  		.style("stroke", goallineColor())
+	  		.style("stroke", rightColor)
 	  		.attr({x1:x(endx),
 	  			y1:y(endy),
 	  			x2:x(12),
