@@ -26,23 +26,17 @@ d3.json("courses.json", function(error, json) {
 				var units = info[2];
 				var grade = info[3];
 				if(fulf === "ger") {
-					if(grade !== "cr/ncr") {
 						geravg[0]++;
 						geravg[1]+=grade;
 						ger += units;
-					}
 				} else if(fulf === "major") {
-					if(grade !== "cr/ncr") {
 						majoravg[0]++;
 						majoravg[1]+=grade;
 						maj += units;
-					}
 				} else { // other
-					if(grade !== "cr/ncr") {
 						otheravg[0]++;
 						otheravg[1]+=grade;
 						oth += units;
-					}
 				}
 			}
 		gerdata[quarter] = (quarter === 0) ? ger : gerdata[quarter-1] + ger;
@@ -152,7 +146,26 @@ d3.json("courses.json", function(error, json) {
 	    		y0arrs.push(arrays[i]);
 	    	}
 	    	if(arrays.length === 3) {
-	    		drawTotalProjection();
+	    		drawTotalProjection([gerdata,majordata,otherdata]);
+	    	} else if(majShown && !gerShown && !othShown) {
+	    		drawTotalProjection([majordata]);
+	    	}
+
+	    	$('.area')
+	    	.on('mouseover', highlight)
+	    	.on('mouseout', unHighlight);
+
+	    	function highlight(e) {
+	    		$('.area').each(function(idx, element) {
+	    			$(element).css('opacity', 0.3);
+	    		});
+	    		$(e.target).css("opacity", 1);
+	    	}
+
+	    	function unHighlight(e) {
+	    		$('.area').each(function(idx, element) {
+	    			$(element).css('opacity', 1);
+	    		});
 	    	}
 	    	//Hover areas
 		 //  	var tip = d3.tip()
@@ -197,11 +210,11 @@ d3.json("courses.json", function(error, json) {
 	    }	
 
 
-	    function drawTotalProjection() {
-	    	var endy = addIndex([gerdata,majordata,otherdata],gerdata.length - 1);
+	    function drawTotalProjection(arrays) {
+	    	var endy = addIndex(arrays,gerdata.length - 1);
 	    	var endx = gerdata.length;
 	    	var slope =  (endy - 
-	    	addIndex([gerdata,majordata,otherdata],0)) / (endx - 1);
+	    	addIndex(arrays,0)) / (endx - 1);
 	    	graph.append("line")
 	  		.attr("class", "projline removable")
 	  		.style("stroke-dasharray", ("2, 2"))
@@ -356,9 +369,13 @@ d3.json("courses.json", function(error, json) {
 		
 
 		function addRowHover(className, remUnits, unfulfilled) {
-			d3.select("#classList > tbody > ."+className).append("td").html(remUnits)
-			.on('mouseover', function() {
+			d3.select("#classList > tbody > ."+className).append("td").html(remUnits);
+			d3.select("#classList > tbody > ."+className).on('click', function() {
 				console.log(unfulfilled);
+			}).on('mouseover', function() {
+				$(this).css({"background-color":"LightGray", "cursor":"pointer"});
+			}).on('mouseout', function() {
+				$(this).css("background-color", "white");
 			});
 		}
 
@@ -430,6 +447,8 @@ d3.json("courses.json", function(error, json) {
 				addRowHover(req, remUnits[0], unfulfilled);
 			}
 		}
+
+
 
 		var hasTaken = function(curClass) {
 			for (var i = 0; i < takenList.length; i++) {
