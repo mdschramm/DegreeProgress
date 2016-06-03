@@ -552,17 +552,46 @@ d3.json("courses.json", function(error, json) {
 					console.log("SHIT!");
 				}
 			};
+
 			//figure out how to pick
+			function isInArray(value, array) {
+  				return array.indexOf(value) > -1;
+			}
 			for (var i = 0; i < nodesets.length; i++) {
 				var nodes = nodesets[i];
-				var uniqueNodes = [];
-				$.each(nodes, function(i, el){
-				    if($.inArray(el, uniqueNodes) === -1) uniqueNodes.push(el);
-				});
-				var edges = edgesets[i];
-				makeNodesAndLinks(uniqueNodes, edges);
-				break;
+				var uniqNodes = [];
+				for(var j=0; j < nodes.length; j++) {
+					if(!isInArray(nodes[j],uniqNodes)) {
+						uniqNodes.push(nodes[j]);
+					}
+				}
+				nodesets[i] = uniqNodes;
+				// var edges = edgesets[i];
+
+				// makeNodesAndLinks(uniqueNodes, edges);
+				// break;
 			};
+
+			function comp(a,b) {
+				if(a.length > b.length) {
+					return -1;
+				}
+
+				if(b.length > a.length) {
+					return -1;
+				}
+				return 0;
+			}
+			nodesets.sort(comp);
+			var suggestions = nodesets.slice(0,3);
+			var innerString = "";
+			for (var i = 0; i < suggestions.length; i++) {
+				var str = suggestions[i];
+				innerString += (str + ",")
+			};
+			console.log(suggestions);
+			$('.suggestionsBox').html(innerString);
+			
 		}
 
 		function makeNodesAndLinks(nodes, edges) {
