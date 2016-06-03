@@ -64,6 +64,12 @@ image {
   /*display: inline;*/
   /*float: left;*/
 }
+.area.highlighted {
+  opacity: 1;
+}
+.area.unhighlighted {
+  opacity: 0.5;
+}
 #container1 {
   position: relative;
   left: 20px;
