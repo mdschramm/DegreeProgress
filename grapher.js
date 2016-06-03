@@ -225,7 +225,7 @@ d3.json("courses.json", function(error, json) {
 	    		graph.append("line")
 			  		.attr("class", "goalline removable")
 			  		.style("stroke-dasharray", ("3, 3"))
-	  				.attr({x1:x(1),y1:y(110),x2:x(12),y2:y(110)});
+	  				.attr({x1:x(1),y1:y(100),x2:x(12),y2:y(100)});
 	    	}
 
 	    	$('.area')
@@ -327,6 +327,7 @@ d3.json("courses.json", function(error, json) {
 	  		.attr("class", "projline removable")
 	  		.style("stroke-dasharray", ("2, 2"))
 	  		.style("stroke", rightColor)
+	  		.style("stroke-width", 1.5)
 	  		.attr({x1:x(endx),
 	  			y1:y(endy),
 	  			x2:x(12),
@@ -444,6 +445,7 @@ d3.json("courses.json", function(error, json) {
 	  	if (creditUnits < 10) {
 	  		creditUnits = "0"+creditUnits;
 	  	}
+	  	creditUnits =16;
 	  	$("#actunits").text(""+activityUnits+"/8");
 	  	$("#creditunits").text(""+creditUnits+"/36");
 	  	var percentCredit = creditUnits/36;
@@ -485,6 +487,7 @@ d3.json("courses.json", function(error, json) {
 
 		// Now let's do the major %/total left meter
 		var percent = 0.97;
+
 		var bar = new ProgressBar.Circle("#majorPercent", {
 		  color: '#aaa',
 		  // This has to be the same size as the maximum width to
@@ -518,13 +521,139 @@ d3.json("courses.json", function(error, json) {
 		bar.animate(percent);
 
 		//classList
-		console.log(cujson); // class,or,all,elective,ap
+
+		function flatten() {
+		    var flat = [];
+		    for (var i = 0; i < arguments.length; i++) {
+		        if (arguments[i] instanceof Array) {
+		            flat.push.apply(flat, flatten.apply(this, arguments[i]));
+		        } else {
+		            flat.push(arguments[i]);
+		        }
+		    }
+		    return flat;
+		}
+
+		function drawNodes(unfulfilled) {
+			var nodesets = [];
+			var edgesets = [];
+			var flattened = flatten(unfulfilled);
+			for (var i = 0; i < flattened.length; i++) {
+				var course = flattened[i];
+				if(course.type === "class") {
+					var toTake = [course.number];
+					var taken = [];
+					var edges = [];
+					var prs = prereq(course.number);
+					makeClassList(toTake,taken, prs, edges, null);
+					nodesets.push(toTake.concat(taken));
+					edgesets.push(edges);
+				} else if(course.type === "elective") {
+					console.log("SHIT!");
+				}
+			};
+			//figure out how to pick
+			for (var i = 0; i < nodesets.length; i++) {
+				var nodes = nodesets[i];
+				var uniqueNodes = [];
+				$.each(nodes, function(i, el){
+				    if($.inArray(el, uniqueNodes) === -1) uniqueNodes.push(el);
+				});
+				var edges = edgesets[i];
+				makeNodesAndLinks(uniqueNodes, edges);
+				break;
+			};
+		}
+
+		function makeNodesAndLinks(nodes, edges) {
+			var nodeMap = {};
+			for (var i = 0; i < nodes.length; i++) {
+				nodeMap[nodes[i]] = i;
+			};
+			var links = [];
+			for (var i = 0; i < edges.length; i++) {
+				var src = nodeMap[edges[i][1]];
+				var dest = nodeMap[edges[i][0]];
+				console.log(edges[i], nodeMap);
+				console.log(src, dest);
+				if(src && dest){
+					links.push({"source":src,"target":dest});
+				}
+			};
+
+			console.log(nodes,edges,links);
+
+			var w = 500;
+			var h = 250;
+			var force = d3.layout.force()
+				.charge(-120)
+			    .linkDistance(30)
+			    .size([w, h]);
+
+			var gsvg = d3.select("#nodearea").append("svg")
+				    .attr("width", w)
+				    .attr("height", h);
+
+			force
+				.nodes(nodes)
+				.links(links)
+				.start();
+
+			var link = gsvg.selectAll('.link')
+			    .data(links)
+			    .enter().append('line')
+			    .attr('class', 'link')
+			    .style("stroke-width",1);
+
+			// Now it's the nodes turn. Each node is drawn as a circle.
+
+			var node = gsvg.selectAll('.node')
+			    .data(nodes)
+			    .enter().append('circle')
+			    .attr('class', 'node')
+			    .attr("r", 20)
+			    .attr("fill", "none")
+			    .attr("stroke", "black")
+			    .call(force.drag);
+			
+			node.append("title")
+			.text(function(d) {return d;});
+
+			force.on("tick", function() {
+			    link.attr("x1", function(d) { console.log(d.source.x);return d.source.x; })
+			        .attr("y1", function(d) { return d.source.y; })
+			        .attr("x2", function(d) { return d.target.x; })
+			        .attr("y2", function(d) { return d.target.y; });
+
+			    node.attr("cx", function(d) { return d.x; })
+			        .attr("cy", function(d) { return d.y; });
+  			});
+
+			
+		}
+
+
+		function makeClassList(toTake, taken, prs, edges,parent) {
+			var kays = Object.keys(prs);
+			for(var i =0; i < kays.length; i++) {
+				edges.push([parent, kays[i]]);
+				if(typeof prs[kays[i]] === "string") {
+					if(prs[kays[i]] === "end") {
+						toTake.push(kays[i]);
+					} else {
+						taken.push(kays[i]);
+					}
+				} else {
+					makeClassList(toTake,taken, prs[kays[i]], edges, kays[i]);
+				}
+			}
+		}
 		
 
 		function addRowHover(className, remUnits, unfulfilled) {
 			d3.select("#classList > tbody > ."+className).append("td").html(remUnits);
 			d3.select("#classList > tbody > ."+className).on('click', function() {
-				console.log(unfulfilled);
+				drawNodes(unfulfilled);
 			}).on('mouseover', function() {
 				$(this).css({"background-color":"LightGray", "cursor":"pointer"});
 			}).on('mouseout', function() {
@@ -597,14 +726,10 @@ d3.json("courses.json", function(error, json) {
 				.append("tr")
 				.attr("class", req)
 				.append("td")
-				.html(req.replace(/\_/, ' '));
+				.html(req.replace(/\_/g, ' '));
 				addRowHover(req, remUnits[0], unfulfilled);
 			}
 		}
-
-		console.log(remClasses);
-
-
 
 		var hasTaken = function(curClass) {
 			for (var i = 0; i < takenList.length; i++) {
@@ -626,7 +751,7 @@ d3.json("courses.json", function(error, json) {
 			var result = $.grep(prejson, function(e){
 				return e.code == curClass;
 			});
-			// console.log(result[0].code);
+			if(result.length === 0) return "end";
 			var prereqArr = result[0].prereq;
 			if (prereqArr.length == 0) return "end";
 			// has array of classes for prereqs
@@ -671,6 +796,65 @@ d3.json("courses.json", function(error, json) {
 			return tree;
 			// return at end
 		};
+		// color picker for pace line
+		var colors = ["#6EFF00", "#C4FF00", "#FFEB00", "#FF8900", "#FF1000"];
+		// var colors = ["rgb(110, 255, 0)", "rgb(196, 255, 0)", "rgb(255, 235, 0)", "rgb(255, 137, 0)", "rgb(255, 16, 0)"];
+		var numQuarters = json.length;
+		var numUnitsTaken = 0;
+		var countUnits = function() {
+			for (var i = 0; i < numQuarters; i++) {
+				var curQuarter = json[i]; //units
+				for (var j = 0; j < curQuarter.length; j++) {
+					var units = curQuarter[j][2];
+					numUnitsTaken += units;
+				}
+			}
+		}
+		countUnits();
+		console.log(numUnitsTaken);
+		var unitsLeft = 180 - numUnitsTaken;
+		var quartersLeft = 12 - numQuarters;
+		var paceLeft = 18;//unitsLeft/quartersLeft;
+		console.log(unitsLeft);
+		console.log(quartersLeft);
+		console.log(paceLeft);
+		var pickColor = function() {
+			var pickedColor = null;
+			console.log(paceLeft);
+			if (paceLeft <= 14) {
+				pickedColor = colors[0];
+				console.log(pickedColor);
+			} else if (paceLeft <= 15) {
+				pickedColor = colors[1];
+			} else if (paceLeft <= 16) {
+				pickedColor = colors[2];
+			} else if (paceLeft <= 17) {
+				pickedColor = colors[3];
+			} else { //greater than 17, in trouble!
+				pickedColor = colors[4];
+			}
+			//now we have color, pick saturation
+			quartersLeft = 9;
+			var sat = ((quartersLeft/12)-0.08333)*100;
+			console.log(sat);
+			console.log(pickedColor);
+			var colorObj = tinycolor(pickedColor);
+			var finalColor = colorObj.desaturate(sat).toString();
+			// var finalColor = colorObj.rgbArray();
+			// var colorString = "rgb("
+			// for (var k = 0; k < finalColor.length; k++) {
+			// 	if (k == (finalColor.length-1)) {
+			// 		colorString += finalColor[k];
+			// 	} else {
+			// 		colorString += finalColor[k] + ",";
+			// 	}
+			// }
+			// colorString += ")"
+			// console.log(colorString);
+			$("#TEST").css('background-color', finalColor);
+
+			}
+		pickColor();
 	});
 	});
 });

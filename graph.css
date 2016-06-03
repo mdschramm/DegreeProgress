@@ -172,6 +172,7 @@ image {
   line-height: 1.4;
 }
 
+<<<<<<< HEAD
 .help-tip p:before{ /* The pointer of the tooltip */
   position: absolute;
   content: '';
@@ -215,4 +216,15 @@ image {
 @keyframes fadeIn {
   0% { opacity:0; }
   100% { opacity:100%; }
+}
+
+.node {
+    fill: #ccc;
+    stroke: #fff;
+    stroke-width: 2px;
+}
+
+.link {
+    stroke: #777;
+    stroke-width: 2px;
 }
