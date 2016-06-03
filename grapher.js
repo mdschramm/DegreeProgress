@@ -153,7 +153,7 @@ d3.json("courses.json", function(error, json) {
 	    		graph.append("line")
 			  		.attr("class", "goalline removable")
 			  		.style("stroke-dasharray", ("3, 3"))
-	  				.attr({x1:x(1),y1:y(110),x2:x(12),y2:y(110)});
+	  				.attr({x1:x(1),y1:y(100),x2:x(12),y2:y(100)});
 	    	}
 
 	    	$('.area')
@@ -370,13 +370,70 @@ d3.json("courses.json", function(error, json) {
 		bar.animate(percent);
 
 		//classList
-		console.log(cujson); // class,or,all,elective,ap
+
+		function flatten() {
+		    var flat = [];
+		    for (var i = 0; i < arguments.length; i++) {
+		        if (arguments[i] instanceof Array) {
+		            flat.push.apply(flat, flatten.apply(this, arguments[i]));
+		        } else {
+		            flat.push(arguments[i]);
+		        }
+		    }
+		    return flat;
+		}
+
+		function drawNodes(unfulfilled) {
+			var nodesets = [];
+			var flattened = flatten(unfulfilled);
+			for (var i = 0; i < flattened.length; i++) {
+				var course = flattened[i];
+				if(course.type === "class") {
+					var toTake = [course];
+					var taken = [];
+					var edges = [];
+					var prs = prereq(course.number);
+					makeClassList(toTake,taken, prs, edges, null);
+					var nodes = makeNodes(nodes, toTake, edges, taken);
+					var graphEdges = makeEdges(nodes, edges);
+				} else if(course.type === "elective") {
+
+				}
+				
+
+			};
+		}
+
+		function makeNodes(nodes, toTake, edges, taken) {
+
+		}
+
+		function makeEdges(nodes, edges) {
+			
+		}
+
+
+		function makeClassList(toTake, taken, prs, edges,parent) {
+			var kays = Object.keys(prs);
+			for(var i =0; i < kays.length; i++) {
+				edges.push([parent, kays[i]]);
+				if(typeof prs[kays[i]] === "string") {
+					if(prs[kays[i]] === "end") {
+						toTake.push(kays[i]);
+					} else {
+						taken.push(kays[i]);
+					}
+				} else {
+					makeClassList(toTake,taken, prs[kays[i]], edges, kays[i]);
+				}
+			}
+		}
 		
 
 		function addRowHover(className, remUnits, unfulfilled) {
 			d3.select("#classList > tbody > ."+className).append("td").html(remUnits);
 			d3.select("#classList > tbody > ."+className).on('click', function() {
-				console.log(unfulfilled);
+				drawNodes(unfulfilled);
 			}).on('mouseover', function() {
 				$(this).css({"background-color":"LightGray", "cursor":"pointer"});
 			}).on('mouseout', function() {
@@ -448,12 +505,10 @@ d3.json("courses.json", function(error, json) {
 				.append("tr")
 				.attr("class", req)
 				.append("td")
-				.html(req.replace(/\_/, ' '));
+				.html(req.replace(/\_/g, ' '));
 				addRowHover(req, remUnits[0], unfulfilled);
 			}
 		}
-
-
 
 		var hasTaken = function(curClass) {
 			for (var i = 0; i < takenList.length; i++) {
@@ -475,7 +530,7 @@ d3.json("courses.json", function(error, json) {
 			var result = $.grep(prejson, function(e){
 				return e.code == curClass;
 			});
-			// console.log(result[0].code);
+			if(result.length === 0) return "end";
 			var prereqArr = result[0].prereq;
 			if (prereqArr.length == 0) return "end";
 			// has array of classes for prereqs
@@ -578,7 +633,7 @@ d3.json("courses.json", function(error, json) {
 			// console.log(colorString);
 			$("#TEST").css('background-color', finalColor);
 
-		}
+			}
 		pickColor();
 	});
 	});
