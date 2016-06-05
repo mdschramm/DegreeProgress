@@ -4,6 +4,7 @@
 d3.json("courses.json", function(error, json) {
 	d3.json("cs_unspecialized.json", function(cuerror, cujson) {
 	d3.json("prereqs.json", function(preerror, prejson) {
+		var electives = cujson["Elective Classes"];
 		if (error) return console.warn(error);
 		//process data
 		var gerdata = [0,0,0,0,0,0];
@@ -52,7 +53,7 @@ d3.json("courses.json", function(error, json) {
 		avgs['oth'] = ((otheravg[0] === 0) ? 0: otheravg[1]/otheravg[0]).toFixed(2) ;
 
 		// Set up margin stuff
-		var margin = {top: 60, right: 30, bottom: 30, left: 60},
+		var margin = {top: 30, right: 30, bottom: 30, left: 60},
 		// width = 750 - margin.left - margin.right,
 		// height = 500 - margin.top - margin.bottom;
 
@@ -182,6 +183,11 @@ d3.json("courses.json", function(error, json) {
 		};
 
 	    var color = d3.scale.category20().domain(["ger","major", "other"]);
+	    // var color = {
+	    // 	"ger":"blue",
+	    // 	"maj": "yellow",
+	    // 	"oth": "pink"
+	    // };
 	    
 	    var classTypes = ["ger", "maj", "oth"];
 	    var verbose = {
@@ -545,11 +551,21 @@ d3.json("courses.json", function(error, json) {
 					var taken = [];
 					var edges = [];
 					var prs = prereq(course.number);
+					console.log(course);
 					makeClassList(toTake,taken, prs, edges, null);
-					nodesets.push(toTake.concat(taken));
+					nodesets.push([toTake, taken]);
 					edgesets.push(edges);
 				} else if(course.type === "elective") {
-					console.log("SHIT!");
+					var toTake = [];
+					var taken = [];
+					var ele = electives[course.electives][0];
+					var prs = prereq(ele);
+					var edges = [];
+					console.log(electives, course);
+					makeClassList(toTake, taken, prs, edges, null);
+					nodesets.push([toTake, taken]);
+				} else {
+					console.log(course);
 				}
 			};
 
@@ -558,14 +574,22 @@ d3.json("courses.json", function(error, json) {
   				return array.indexOf(value) > -1;
 			}
 			for (var i = 0; i < nodesets.length; i++) {
-				var nodes = nodesets[i];
-				var uniqNodes = [];
-				for(var j=0; j < nodes.length; j++) {
-					if(!isInArray(nodes[j],uniqNodes)) {
-						uniqNodes.push(nodes[j]);
+				var toTakeAndTaken = nodesets[i];
+				var toTake = toTakeAndTaken[0];
+				var taken = toTakeAndTaken[1];
+				var uniqToTake = [];
+				var uniqTaken = [];	
+				for(var j=0; j < toTake.length; j++) {
+					if(!isInArray(toTake[j],uniqToTake)) {
+						uniqToTake.push(toTake[j]);
 					}
 				}
-				nodesets[i] = uniqNodes;
+				for(var j=0; j < taken.length; j++) {
+					if(!isInArray(taken[j],uniqTaken)) {
+						uniqTaken.push(taken[j]);
+					}
+				}
+				nodesets[i] = [uniqToTake, uniqTaken];
 				// var edges = edgesets[i];
 
 				// makeNodesAndLinks(uniqueNodes, edges);
@@ -582,14 +606,18 @@ d3.json("courses.json", function(error, json) {
 				}
 				return 0;
 			}
-			nodesets.sort(comp);
+			// nodesets.sort(comp);
 			var suggestions = nodesets.slice(0,3);
 			var innerString = "";
 			for (var i = 0; i < suggestions.length; i++) {
-				var str = suggestions[i];
-				innerString += (str + ",")
+				var toTake = suggestions[i][0];
+				innerString += "<p> Need to take: " + toTake + "</p>";
+				var taken = suggestions[i][1];
+				innerString += "<p> Prerequisites taken: " + taken + "</p><br>";
 			};
-			console.log(suggestions);
+			if (suggestions.length === 0) {
+				innerString = "<p> No suggested classes </p>";
+			}
 			$('.suggestionsBox').html(innerString);
 			
 		}
@@ -692,7 +720,6 @@ d3.json("courses.json", function(error, json) {
 
 		var remClasses = takenList.slice();
 		// console.log(remClasses);
-		var electives = cujson["Elective Classes"];
 
 		function checkFulf(requirement, remClasses, fulfillType, remUnits) {
 			switch(fulfillType) {
@@ -884,6 +911,79 @@ d3.json("courses.json", function(error, json) {
 
 			}
 		pickColor();
+
+		//add color legend
+		var boxColor = 
+		[
+			[tinycolor('#6eff00').desaturate(90).toString(),tinycolor('#ffeb00').desaturate(90).toString(),tinycolor('#ff1000').desaturate(90).toString()],
+			[tinycolor('#6eff00').desaturate(68).toString(),tinycolor('#ffeb00').desaturate(30).toString(),tinycolor('#ff1000').desaturate(30).toString()],
+			["#6EFF00","#FFEB00","#FF1000"]
+		];
+
+		var colorSvg = d3.select('.colorLegend').append("svg")
+						.attr("width", 120)
+						.attr("height", 120)
+						.attr("margin-left","60px");
+		for(var i = 0; i < 3; i++) {
+			for(var j = 0; j < 3; j++) {
+				colorSvg.append("rect")
+					.attr("width",10)
+					.attr("height", 10)
+					.attr("x", 30+ 20*i)
+					.attr("y", 20+ 20*j)
+					.attr("fill", boxColor[j][i]);
+			}
+		}
+
+		colorSvg.append("text")
+			.text("Worse projection")
+			.attr("x",20)
+			.attr("y",95)
+			.attr("font-size", "9");
+		colorSvg.append("text")
+			.text("Less rgent")
+			.attr("x",-75)
+			.attr("y",10)
+			.attr("font-size", "9")
+			.attr("transform", "rotate(-90)");
+		
+		colorSvg.append("defs").append("marker")
+		    .attr("id", "arrowhead")
+		    .attr("refX", 3) /*must be smarter way to calculate shift*/
+		    .attr("refY", 5)
+		    .attr("markerWidth", 300)
+		    .attr("markerHeight", 300)
+		    .attr("orient", "auto")
+		    .append("path")
+		     .attr("d", "M 0,0 V 10 L20,5 Z");
+
+		colorSvg.append('line')
+			.attr({
+				"class":"arrow",
+				"x1":20,
+				"y1":75,
+				"x2":20,
+				"y2":25,
+				"stroke-width": 0.5,
+				"stroke": "black",
+				 "marker-end":"url(#arrowhead)"
+			});
+
+		colorSvg.append('line')
+			.attr({
+				"class":"arrow",
+				"x1":25,
+				"y1":80,
+				"x2":75,
+				"y2":80,
+				"stroke-width": 0.5,
+				"stroke": "black",
+				"marker-end":"url(#arrowhead)"
+			});
+         
+
+
+
 	});
 	});
 });

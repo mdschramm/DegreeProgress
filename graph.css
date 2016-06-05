@@ -87,7 +87,7 @@ image {
   /*left: 20px;*/
   top: 50px;
   width: 480px;
-  height: 30px;
+  height: 80px;
 }
 #container1 > svg {
     width: 100%;
@@ -120,7 +120,7 @@ image {
 }
 
 #rightside {
-  margin-left: -330px;
+  /*margin-left: -330px;*/
 }
 
 /* tooltip */
@@ -172,7 +172,6 @@ image {
   line-height: 1.4;
 }
 
-<<<<<<< HEAD
 .help-tip p:before{ /* The pointer of the tooltip */
   position: absolute;
   content: '';
@@ -227,4 +226,8 @@ image {
 .link {
     stroke: #777;
     stroke-width: 2px;
+}
+
+.suggestionsBox {
+  margin-top: -40%;
 }
